@@ -85,7 +85,7 @@ const cvData = {
             date: "Jan 2025",
             credentialId: "https://www.udemy.com/certificate/UC-4fdfd77b-c214-4ec9-9830-1d8666e4bd2c/",
             skills: ["Python", "OOP"],
-            logo: "assets/images/udemy-logo.png"
+            logo: "assets/images/Udemy-Logo.png"
         },
         {
             title: "Workflow and Process Management with Git, GitHub, GitLab and Jira",

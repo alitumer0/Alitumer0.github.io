@@ -533,16 +533,63 @@ function renderContact() {
 
 function setupContactForm() {
     const form = document.getElementById('contact-form');
-    form.addEventListener('submit', (e) => {
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const formData = new FormData(form);
-        console.log({
-            name: formData.get('name'),
-            email: formData.get('email'),
-            message: formData.get('message')
+        
+        submitButton.disabled = true;
+        submitButton.textContent = 'Gönderiliyor...';
+        
+        const formData = {
+            from_name: form.querySelector('input[name="name"]').value,
+            from_email: form.querySelector('input[name="email"]').value,
+            message: form.querySelector('textarea[name="message"]').value,
+            to_email: 'aetumer50@gmail.com'
+        };
+
+        console.log('Form verileri:', formData);
+
+        try {
+            console.log('EmailJS gönderimi başlıyor...');
+            const response = await emailjs.send(
+                "service_qqvxwzk",
+                "template_xcy6kkv",
+                formData
+            );
+
+            console.log('EmailJS yanıtı:', response);
+
+            if (response.status === 200) {
+                console.log('E-posta başarıyla gönderildi');
+                alert('Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağım.');
+                form.reset();
+            } else {
+                console.error('Beklenmeyen yanıt:', response);
+                throw new Error('Beklenmeyen yanıt: ' + response.status);
+            }
+        } catch (error) {
+            console.error('Hata detayları:', error);
+            console.error('Hata mesajı:', error.message);
+            console.error('Hata stack:', error.stack);
+            alert('Mesaj gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Gönder';
+        }
+    });
+
+    // Form inputlarına animasyon ekle
+    const inputs = form.querySelectorAll('input, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            input.style.transform = 'scale(1.02)';
+            input.style.transition = 'all 0.3s ease';
         });
-        alert('Thank you for your message! I will get back to you soon.');
-        form.reset();
+
+        input.addEventListener('blur', () => {
+            input.style.transform = 'scale(1)';
+        });
     });
 }
 
@@ -590,47 +637,54 @@ const sidebar = document.querySelector('.sidebar');
 const mainContent = document.querySelector('.main-content');
 const sidebarLinks = document.querySelectorAll('.sidebar-links a');
 
-sidebarToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-    mainContent.classList.toggle('shifted');
-});
+if (sidebarToggle && sidebar && mainContent) {
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+        mainContent.classList.toggle('shifted');
+    });
 
-document.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768) {
-        if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
-            sidebar.classList.remove('active');
-            mainContent.classList.remove('shifted');
-        }
-    }
-});
-
-sidebarLinks.forEach(link => {
-    link.addEventListener('click', () => {
+    document.addEventListener('click', (e) => {
         if (window.innerWidth <= 768) {
-            sidebar.classList.remove('active');
-            mainContent.classList.remove('shifted');
+            if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+                mainContent.classList.remove('shifted');
+            }
         }
     });
-});
+
+    if (sidebarLinks) {
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                    mainContent.classList.remove('shifted');
+                }
+            });
+        });
+    }
+}
 
 // Timeline Animation
 function createTimeline() {
-    const experienceSection = document.getElementById('experience-content');
-    experienceSection.className = 'timeline';
+    if (!cvData || !cvData.experience) return;
     
-    experienceData.forEach(exp => {
+    const timeline = document.querySelector('.timeline');
+    if (!timeline) return;
+
+    cvData.experience.forEach((exp, index) => {
         const timelineItem = document.createElement('div');
         timelineItem.className = 'timeline-item';
         
         timelineItem.innerHTML = `
             <div class="timeline-content">
-                <div class="timeline-date">${exp.period}</div>
-                <h3 class="timeline-title">${exp.title} at ${exp.company}</h3>
-                <p class="timeline-description">${exp.description}</p>
+                <h3>${exp.title}</h3>
+                <h4>${exp.company}</h4>
+                <p class="date">${exp.date}</p>
+                <p>${exp.description}</p>
             </div>
         `;
         
-        experienceSection.appendChild(timelineItem);
+        timeline.appendChild(timelineItem);
     });
 }
 
