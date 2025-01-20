@@ -1,9 +1,7 @@
-// Theme management
 const themeToggle = document.querySelector('.theme-toggle');
 const htmlElement = document.documentElement;
 const matrixBg = document.querySelector('.matrix-bg');
 
-// Initialize theme from localStorage or default to dark
 const initializeTheme = () => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
@@ -32,7 +30,6 @@ themeToggle.addEventListener('click', () => {
     updateThemeIcon(newTheme);
 });
 
-// Matrix rain effect
 let matrixRainInterval;
 
 function startMatrixRain() {
@@ -81,7 +78,6 @@ function stopMatrixRain() {
     }
 }
 
-// Type writer effect for skills
 function typeWriterEffect(element, text, speed = 50) {
     let i = 0;
     element.textContent = '';
@@ -99,7 +95,6 @@ function typeWriterEffect(element, text, speed = 50) {
     });
 }
 
-// VS Code-like cursor animation for text
 function addCursorAnimation(element) {
     const cursor = document.createElement('span');
     cursor.className = 'cursor';
@@ -107,9 +102,7 @@ function addCursorAnimation(element) {
     element.appendChild(cursor);
 }
 
-// Modified render functions with animations
 async function renderHome() {
-    // Load and animate profile image
     const profileImage = document.getElementById('profile-image');
     if (profileImage) {
         profileImage.style.backgroundImage = `url(${cvData.profileImage})`;
@@ -129,7 +122,6 @@ async function renderHome() {
     renderSkills();
 }
 
-// Initialize theme and start animations
 document.addEventListener('DOMContentLoaded', () => {
     initializeTheme();
     renderHome();
@@ -142,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderContact();
     setupContactForm();
 
-    // Setup intersection observer for scroll animations
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -161,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(element);
     });
 
-    // Add hover effect to skill tags
     document.querySelectorAll('.skill-tag').forEach(tag => {
         tag.addEventListener('mouseover', () => {
             tag.style.transform = 'scale(1.1)';
@@ -172,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Update active link on scroll
 const navLinks = document.querySelectorAll('.nav-links a');
 
 window.addEventListener('scroll', () => {
@@ -195,7 +184,6 @@ window.addEventListener('scroll', () => {
     });
 });
 
-// Smooth scroll for navigation links
 navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -301,7 +289,6 @@ function renderProjects() {
         </div>
     `).join('');
 
-    // Add hover effect to project cards
     document.querySelectorAll('.project-card').forEach(card => {
         card.addEventListener('mouseenter', () => {
             card.querySelector('.project-overlay').style.opacity = '1';
@@ -343,7 +330,7 @@ function setupContactForm() {
 
 async function renderSkills() {
     const skillsContainer = document.querySelector('.skills-container');
-    skillsContainer.innerHTML = ''; // Clear existing skills
+    skillsContainer.innerHTML = ''; 
     
     for (const skill of cvData.skills) {
         const skillElement = document.createElement('div');
@@ -365,13 +352,11 @@ async function renderSkills() {
         
         skillsContainer.appendChild(skillElement);
         
-        // Increased delay for slower loading
         await new Promise(resolve => setTimeout(resolve, 200));
         skillElement.style.opacity = '1';
         skillElement.style.transform = 'translateY(0)';
     }
     
-    // Add hover effect to skill tags
     document.querySelectorAll('.skill-tag').forEach(tag => {
         tag.addEventListener('mouseover', () => {
             tag.style.transform = 'scale(1.1)';
@@ -382,7 +367,6 @@ async function renderSkills() {
     });
 }
 
-// Sidebar functionality
 const sidebarToggle = document.querySelector('.sidebar-toggle');
 const sidebar = document.querySelector('.sidebar');
 const mainContent = document.querySelector('.main-content');
@@ -393,7 +377,6 @@ sidebarToggle.addEventListener('click', () => {
     mainContent.classList.toggle('shifted');
 });
 
-// Close sidebar when clicking outside on mobile
 document.addEventListener('click', (e) => {
     if (window.innerWidth <= 768) {
         if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
@@ -403,7 +386,6 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Close sidebar when clicking a link on mobile
 sidebarLinks.forEach(link => {
     link.addEventListener('click', () => {
         if (window.innerWidth <= 768) {
