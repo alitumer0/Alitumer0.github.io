@@ -130,9 +130,9 @@ const cvData = {
             level: "Native",
             icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
                     <path fill="#E30A17" d="M0 0h640v480H0z"/>
-                    <circle cx="320" cy="240" r="120" fill="#ffffff"/>
-                    <circle cx="350" cy="240" r="96" fill="#E30A17"/>
-                    <path fill="#ffffff" d="m436.2 240-106.4 34.6 65.7-90.4v111.6l-65.7-90.4z"/>
+                    <circle cx="300" cy="240" r="120" fill="#fff"/>
+                    <circle cx="340" cy="240" r="96" fill="#E30A17"/>
+                    <path fill="#fff" d="m520 240-160 52 98.4-135.6v167.2L360 292z"/>
                   </svg>`
         }
     ]
