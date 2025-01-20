@@ -331,11 +331,30 @@ section:nth-child(odd) {
     z-index: 2;
     display: flex;
     flex-direction: column;
+    transform-style: preserve-3d;
+    transform: perspective(1000px);
 }
 
-.project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg,
+        rgba(var(--accent-rgb), 0.1),
+        transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.project-card:hover::before {
+    opacity: 1;
 }
 
 .project-preview {
@@ -353,18 +372,21 @@ section:nth-child(odd) {
     justify-content: center;
     align-items: center;
     padding: 0;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
 }
 
 .project-preview img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: all 0.5s ease;
+    transition: transform 0.3s ease;
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    transform-style: preserve-3d;
 }
 
 .project-card:hover .project-preview img {
-    transform: scale(1.05);
+    transform: scale(1.05) translateZ(20px);
     filter: brightness(1.1) drop-shadow(0 8px 16px rgba(0,0,0,0.2));
 }
 
@@ -385,6 +407,7 @@ section:nth-child(odd) {
     opacity: 0;
     transition: all 0.3s ease;
     backdrop-filter: blur(2px);
+    transform-style: preserve-3d;
 }
 
 .project-card:hover .project-overlay {
@@ -397,12 +420,15 @@ section:nth-child(odd) {
     border-top: 1px solid var(--border);
     position: relative;
     z-index: 2;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
 }
 
 .project-info h3 {
     color: var(--text-primary);
     margin-bottom: 0.75rem;
     font-size: 1.25rem;
+    transform: translateZ(40px);
 }
 
 .project-description {
@@ -410,6 +436,8 @@ section:nth-child(odd) {
     font-size: 0.9rem;
     line-height: 1.6;
     margin-bottom: 1rem;
+    transform: translateZ(30px);
+    transition: transform 0.3s ease;
 }
 
 .technologies {
@@ -426,11 +454,14 @@ section:nth-child(odd) {
     border-radius: 9999px;
     font-size: 0.75rem;
     transition: all 0.3s ease;
+    transform-style: preserve-3d;
+    transform: translateZ(20px);
 }
 
 .tech-tag:hover {
     background-color: var(--accent);
-    transform: translateY(-2px);
+    transform: translateY(-2px) translateZ(20px);
+    animation: float 2s ease-in-out infinite;
 }
 
 .project-link {
@@ -443,12 +474,13 @@ section:nth-child(odd) {
     font-weight: 500;
     transition: all 0.3s ease;
     border: 2px solid transparent;
-    transform: translateY(20px);
+    transform: translateY(20px) translateZ(50px);
     opacity: 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .project-card:hover .project-link {
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
     opacity: 1;
 }
 
@@ -456,7 +488,7 @@ section:nth-child(odd) {
     background-color: transparent;
     border-color: var(--bg-primary);
     color: var(--bg-primary) !important;
-    transform: translateY(-2px) !important;
+    transform: translateY(-2px) translateZ(0) !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
@@ -717,7 +749,43 @@ html {
     height: 100%;
     pointer-events: none;
     z-index: -1;
+}
+
+.matrix-bg canvas {
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+    cursor: crosshair;
+}
+
+[data-theme="light"] .matrix-bg canvas {
+    opacity: 0.08;
+    pointer-events: auto;
+    filter: brightness(0.9) contrast(1.1);
+    mix-blend-mode: multiply;
+}
+
+[data-theme="dark"] .matrix-bg canvas {
     opacity: 0.05;
+    mix-blend-mode: screen;
+}
+
+/* Efekt hover durumları */
+.matrix-bg canvas:hover {
+    opacity: 0.12 !important;
+    transition: opacity 0.3s ease;
+}
+
+.matrix-bg canvas:active {
+    opacity: 0.15 !important;
+    transition: opacity 0.1s ease;
+}
+
+/* Tema geçiş animasyonu */
+.theme-transition .matrix-bg canvas {
+    transition: 
+        opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+        filter 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+        mix-blend-mode 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .theme-toggle-wrapper {
@@ -863,72 +931,164 @@ body * {
 }
 
 .profile-container {
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
     perspective: 1000px;
+    position: relative;
 }
 
 .profile-image-wrapper {
-    width: 200px;
-    height: 200px;
+    width: 220px;
+    height: 220px;
     margin: 0 auto;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.6s;
-}
-
-.profile-image-wrapper:hover {
-    transform: rotateY(10deg) rotateX(10deg);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .profile-image {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
+    border-radius: 20px;
     background-size: cover;
     background-position: center;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     position: relative;
-    transition: all 0.3s ease;
+    overflow: hidden;
+    box-shadow: 
+        0 0 30px rgba(var(--accent-rgb), 0.3),
+        inset 0 0 30px rgba(var(--accent-rgb), 0.3);
 }
 
+/* Neon çerçeve efekti */
+.profile-neon-border {
+    position: absolute;
+    inset: -2px;
+    border: 2px solid var(--accent);
+    border-radius: 20px;
+    opacity: 0.8;
+    filter: blur(1px);
+    animation: neonPulse 2s infinite;
+}
+
+/* Köşe aksentleri */
+.profile-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--accent);
+    opacity: 0.8;
+    filter: blur(0.5px);
+}
+
+.corner-tl { top: -5px; left: -5px; border-right: none; border-bottom: none; }
+.corner-tr { top: -5px; right: -5px; border-left: none; border-bottom: none; }
+.corner-bl { bottom: -5px; left: -5px; border-right: none; border-top: none; }
+.corner-br { bottom: -5px; right: -5px; border-left: none; border-top: none; }
+
+/* Siber dekorasyon çizgileri */
+.cyber-line {
+    position: absolute;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--accent),
+        transparent
+    );
+    opacity: 0.5;
+}
+
+.cyber-line-h {
+    height: 1px;
+    width: 100%;
+    left: 0;
+}
+
+.cyber-line-v {
+    width: 1px;
+    height: 100%;
+    top: 0;
+}
+
+.cyber-line-1 { top: 30%; }
+.cyber-line-2 { bottom: 30%; }
+.cyber-line-3 { left: 30%; }
+.cyber-line-4 { right: 30%; }
+
+/* Hover efektleri */
+.profile-image-wrapper:hover {
+    transform: 
+        perspective(1000px) 
+        rotateX(5deg) 
+        rotateY(5deg) 
+        scale(1.02);
+}
+
+.profile-image-wrapper:hover .profile-neon-border {
+    filter: blur(2px);
+    opacity: 1;
+}
+
+/* Glitch efekti */
+.profile-image::before,
 .profile-image::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    background-size: cover;
+    background-position: center;
+    mix-blend-mode: hard-light;
+    animation: glitch 4s infinite;
+}
+
+.profile-image::after {
+    animation: glitch 4s infinite reverse;
+    animation-delay: 0.5s;
+}
+
+/* Animasyonlar */
+@keyframes neonPulse {
+    0%, 100% {
+        box-shadow: 
+            0 0 15px rgba(var(--accent-rgb), 0.5),
+            0 0 30px rgba(var(--accent-rgb), 0.3),
+            0 0 45px rgba(var(--accent-rgb), 0.1);
+    }
+    50% {
+        box-shadow: 
+            0 0 30px rgba(var(--accent-rgb), 0.8),
+            0 0 60px rgba(var(--accent-rgb), 0.5),
+            0 0 90px rgba(var(--accent-rgb), 0.3);
+    }
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); opacity: 0.8; }
+    40% { transform: translate(2px, -2px); opacity: 0.9; }
+    60% { transform: translate(-1px, 1px); opacity: 0.8; }
+    80% { transform: translate(1px, -1px); opacity: 0.9; }
+}
+
+/* Scan line efekti */
+.scan-line {
+    position: absolute;
     width: 100%;
-    height: 100%;
-    border-radius: 50%;
+    height: 100px;
     background: linear-gradient(
-        45deg,
-        transparent 0%,
-        rgba(255,255,255,0.1) 50%,
-        transparent 100%
+        to bottom,
+        transparent,
+        rgba(var(--accent-rgb), 0.1),
+        transparent
     );
-    transition: transform 0.6s;
+    animation: scan 3s linear infinite;
 }
 
-.profile-image-wrapper:hover .profile-image::after {
-    transform: rotate(360deg);
-}
-
-[data-theme="dark"] .profile-image {
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-}
-
-@keyframes profileImageAppear {
-    from {
-        opacity: 0;
-        transform: scale(0.8) translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-.profile-image.visible {
-    animation: profileImageAppear 0.8s ease-out forwards;
+@keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
 }
 
 .education-grid {
@@ -1211,4 +1371,566 @@ body * {
 .sidebar,
 .sidebar-toggle {
     display: none;
+}
+
+/* Timeline Styles */
+.timeline {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    background: var(--accent-color);
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.5;
+}
+
+.timeline-item {
+    padding: 10px 40px;
+    position: relative;
+    width: 50%;
+    opacity: 0;
+    transform: translateX(-100px);
+    transition: all 0.5s ease;
+}
+
+.timeline-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.timeline-item:nth-child(even) {
+    left: 50%;
+    transform: translateX(100px);
+}
+
+.timeline-item:nth-child(even).visible {
+    transform: translateX(0);
+}
+
+.timeline-content {
+    padding: 20px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+.timeline-content::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.timeline-item:nth-child(odd) .timeline-content::after {
+    right: -60px;
+}
+
+.timeline-item:nth-child(even) .timeline-content::after {
+    left: -60px;
+}
+
+.timeline-date {
+    color: var(--accent-color);
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.timeline-title {
+    margin: 0 0 10px;
+    font-size: 1.2em;
+    color: var(--text-primary);
+}
+
+.timeline-description {
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+@media screen and (max-width: 768px) {
+    .timeline::after {
+        left: 31px;
+    }
+    
+    .timeline-item {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+    }
+    
+    .timeline-item:nth-child(even) {
+        left: 0;
+    }
+    
+    .timeline-content::after {
+        left: -39px !important;
+    }
+}
+
+/* Tema Geçiş Animasyonları */
+.theme-transition {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body,
+.nav-links a,
+.project-card,
+.experience-item,
+.education-item,
+.certification-item,
+.language-item,
+.contact-form input,
+.contact-form textarea,
+.code-block,
+.timeline-content {
+    transition: 
+        background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-toggle {
+    overflow: visible;
+}
+
+.theme-toggle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, 
+        rgba(var(--accent-rgb), 0.2) 0%,
+        transparent 70%);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.theme-toggle:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+@keyframes themeSwitch {
+    0% {
+        transform: scale(1) rotate(0);
+    }
+    50% {
+        transform: scale(1.2) rotate(180deg);
+    }
+    100% {
+        transform: scale(1) rotate(360deg);
+    }
+}
+
+.theme-toggle .toggle-thumb {
+    animation: none;
+}
+
+.theme-toggle:active .toggle-thumb {
+    animation: themeSwitch 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tema değişiminde içerik animasyonu */
+.container {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] .container,
+[data-theme="light"] .container {
+    animation: themeContentSwitch 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes themeContentSwitch {
+    0% {
+        opacity: 0.8;
+        transform: scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Tema değişiminde arka plan geçişi */
+.matrix-bg canvas {
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="light"] .matrix-bg canvas {
+    opacity: 0.08;
+    pointer-events: auto;
+    filter: brightness(0.9) contrast(1.1);
+    mix-blend-mode: multiply;
+}
+
+[data-theme="dark"] .matrix-bg canvas {
+    opacity: 0.05;
+    mix-blend-mode: screen;
+}
+
+/* Efekt hover durumları */
+.matrix-bg canvas:hover {
+    opacity: 0.12 !important;
+    transition: opacity 0.3s ease;
+}
+
+.matrix-bg canvas:active {
+    opacity: 0.15 !important;
+    transition: opacity 0.1s ease;
+}
+
+/* Tema geçiş animasyonu */
+.theme-transition .matrix-bg canvas {
+    transition: 
+        opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+        filter 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+        mix-blend-mode 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dil Bayrakları Stilleri */
+.language-flag {
+    width: 80px;
+    height: 50px;
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+    transform-style: preserve-3d;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+}
+
+.language-flag svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.language-item:hover .language-flag {
+    transform: perspective(800px) rotateY(15deg) rotateX(-5deg) scale(1.1);
+    box-shadow: 
+        -5px 5px 15px rgba(0, 0, 0, 0.2),
+        5px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.language-flag::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    transform: skewX(-25deg);
+    transition: 0.75s;
+}
+
+.language-item:hover .language-flag::before {
+    left: 150%;
+}
+
+.language-flag::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.2) 0%,
+        transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.language-item:hover .language-flag::after {
+    opacity: 1;
+}
+
+@keyframes flagWave {
+    0% {
+        transform: perspective(800px) rotateY(15deg) rotateX(-5deg) scale(1.1);
+    }
+    25% {
+        transform: perspective(800px) rotateY(15deg) rotateX(5deg) scale(1.1);
+    }
+    50% {
+        transform: perspective(800px) rotateY(-15deg) rotateX(-5deg) scale(1.1);
+    }
+    75% {
+        transform: perspective(800px) rotateY(-15deg) rotateX(5deg) scale(1.1);
+    }
+    100% {
+        transform: perspective(800px) rotateY(15deg) rotateX(-5deg) scale(1.1);
+    }
+}
+
+.language-item:hover .language-flag {
+    animation: flagWave 4s ease-in-out infinite;
+}
+
+.language-level {
+    position: relative;
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    border-radius: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    opacity: 0.9;
+}
+
+.language-item:hover .language-level {
+    background: var(--accent);
+    color: var(--bg-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+    opacity: 1;
+}
+
+.language-name {
+    margin: 0.8rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: color 0.3s ease;
+    opacity: 0.9;
+}
+
+.language-item:hover .language-name {
+    color: var(--accent);
+    opacity: 1;
+}
+
+/* 3D Kart Efektleri */
+.project-card {
+    box-shadow: 
+        0 5px 15px rgba(0, 0, 0, 0.1),
+        0 15px 35px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.project-card:hover {
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.15),
+        0 20px 45px rgba(0, 0, 0, 0.15);
+}
+
+/* Paralaks efekti için animasyon */
+@keyframes float {
+    0% {
+        transform: translateZ(20px);
+    }
+    50% {
+        transform: translateZ(30px);
+    }
+    100% {
+        transform: translateZ(20px);
+    }
+}
+
+.tech-tag:hover {
+    animation: float 2s ease-in-out infinite;
+}
+
+/* Light tema için animasyonlu arka plan */
+[data-theme="light"] body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45deg, #ffefba, #fff3e0, #e3f2fd, #f3e5f5);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: -2;
+}
+
+[data-theme="light"] body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,0.1)' fill-rule='evenodd'/%3E%3C/svg%3E");
+    animation: floatingBg 30s linear infinite;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+@keyframes floatingBg {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Kayan yıldızlar efekti */
+[data-theme="light"] .star {
+    position: fixed;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: starFloat 3s linear infinite;
+    opacity: 0.5;
+}
+
+@keyframes starFloat {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(100vh) translateX(100vw);
+        opacity: 0;
+    }
+}
+
+/* Bulanık cam efekti için güncelleme */
+[data-theme="light"] .card-bg,
+[data-theme="light"] .section,
+[data-theme="light"] .project-card,
+[data-theme="light"] .experience-item,
+[data-theme="light"] .education-item,
+[data-theme="light"] .certification-item,
+[data-theme="light"] .language-item,
+[data-theme="light"] .contact-details,
+[data-theme="light"] .code-block {
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 8px 32px 0 rgba(31, 38, 135, 0.1),
+        0 2px 8px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Light tema için parçacık efekti */
+[data-theme="light"] .particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+[data-theme="light"] .particle {
+    position: absolute;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 182, 193, 0.3),    /* Açık pembe */
+        rgba(173, 216, 230, 0.3),    /* Açık mavi */
+        rgba(255, 218, 185, 0.3)     /* Açık turuncu */
+    );
+    border-radius: 50%;
+    animation: particleFloat 6s infinite;
+    filter: blur(0.5px);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="light"] .particle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.3) 0%,
+        transparent 70%
+    );
+    transform: translate(-50%, -50%);
+    opacity: 0.3;
+}
+
+/* Parçacık varyasyonları */
+[data-theme="light"] .particle:nth-child(2n) {
+    animation-duration: 8s;
+    animation-delay: -2s;
+    background: linear-gradient(
+        135deg,
+        rgba(176, 224, 230, 0.3),    /* Açık deniz mavisi */
+        rgba(221, 160, 221, 0.3),    /* Açık mor */
+        rgba(255, 228, 225, 0.3)     /* Misty rose */
+    );
+}
+
+[data-theme="light"] .particle:nth-child(3n) {
+    animation-duration: 10s;
+    animation-delay: -4s;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 240, 245, 0.3),    /* Lavender blush */
+        rgba(240, 248, 255, 0.3),    /* Alice blue */
+        rgba(255, 250, 205, 0.3)     /* Lemon chiffon */
+    );
+}
+
+[data-theme="light"] .particle:nth-child(4n) {
+    animation-duration: 12s;
+    animation-delay: -6s;
+    background: linear-gradient(
+        135deg,
+        rgba(230, 230, 250, 0.3),    /* Lavender */
+        rgba(255, 228, 196, 0.3),    /* Bisque */
+        rgba(176, 224, 230, 0.3)     /* Powder blue */
+    );
+}
+
+/* Parçacık hover efekti */
+[data-theme="light"] .particle:hover {
+    transform: scale(2);
+    filter: blur(0);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 1);
 }
