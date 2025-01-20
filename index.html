@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ali Tümer - Full Stack Developer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fira-code@6.2.0/distr/fira_code.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/data.js" defer></script>
+    <script src="js/main.js" defer></script>
+</head>
+<body>
+    <div class="matrix-bg"></div>
+    
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle-wrapper">
+        <button class="theme-toggle" aria-label="Toggle theme">
+            <div class="toggle-track">
+                <i class="ri-sun-fill light-icon"></i>
+                <i class="ri-moon-fill dark-icon"></i>
+            </div>
+            <div class="toggle-thumb"></div>
+        </button>
+    </div>
+
+    <!-- Right Side Navigation -->
+    <nav class="right-nav">
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <section id="home" class="section">
+            <div class="container">
+                <div class="profile-container">
+                    <div class="profile-image-wrapper">
+                        <div class="profile-image" id="profile-image"></div>
+                    </div>
+                </div>
+                <h1 id="name"></h1>
+                <h2 id="title"></h2>
+                <div id="skills" class="skills-container"></div>
+            </div>
+        </section>
+
+        <section id="about" class="section">
+            <div class="container">
+                <h2>About Me</h2>
+                <div id="about-content"></div>
+            </div>
+        </section>
+
+        <section id="experience" class="section">
+            <div class="container">
+                <h2>Experience</h2>
+                <div id="experience-content"></div>
+            </div>
+        </section>
+
+        <section id="education" class="section">
+            <div class="container">
+                <h2>Education</h2>
+                <div id="education-content" class="education-grid"></div>
+            </div>
+        </section>
+
+        <section id="certifications" class="section">
+            <div class="container">
+                <h2>Certifications</h2>
+                <div id="certifications-content" class="certifications-grid"></div>
+            </div>
+        </section>
+
+        <section id="languages" class="section">
+            <div class="container">
+                <h2>Languages</h2>
+                <div id="languages-content" class="languages-grid"></div>
+            </div>
+        </section>
+
+        <section id="projects" class="section">
+            <div class="container">
+                <h2>Projects</h2>
+                <div id="projects-content" class="projects-grid"></div>
+            </div>
+        </section>
+
+        <section id="contact" class="section">
+            <div class="container">
+                <h2>Contact</h2>
+                <div class="contact-content">
+                    <div id="contact-info"></div>
+                    <form id="contact-form" class="contact-form">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                        <input type="email" name="email" placeholder="Your Email" required>
+                        <textarea name="message" placeholder="Your Message" required></textarea>
+                        <button type="submit">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Ali Tümer. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html> 
