@@ -18,10 +18,10 @@ Modern ve dinamik bir kişisel portfolyo web sitesi. Animasyonlu sidebar menü v
 
 ## 🛠️ Kurulum
 1. Repoyu klonlayın
-```bash
+
 git clone https://github.com/alitumer0/mywebsite.git
 
-```bash
+
 
 👤 Geliştirici
 Ali Tümer
