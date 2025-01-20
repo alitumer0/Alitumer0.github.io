@@ -21,6 +21,7 @@ Modern ve dinamik bir kişisel portfolyo web sitesi. Animasyonlu sidebar menü v
 ```bash
 git clone https://github.com/alitumer0/mywebsite.git
 
+```bash
 
 👤 Geliştirici
 Ali Tümer
