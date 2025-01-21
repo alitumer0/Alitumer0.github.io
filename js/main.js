@@ -1,20 +1,98 @@
-const themeToggle = document.querySelector('.theme-toggle');
-const htmlElement = document.documentElement;
-const matrixBg = document.querySelector('.matrix-bg');
+// Global değişkenler
 let matrixRainInterval;
 let particleCanvas = null;
 
-const initializeTheme = () => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        htmlElement.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-    } else {
-        htmlElement.setAttribute('data-theme', 'dark');
-        updateThemeIcon('dark');
-        localStorage.setItem('theme', 'dark');
+const themeToggle = document.querySelector('.theme-toggle');
+const htmlElement = document.documentElement;
+const matrixBg = document.querySelector('.matrix-bg');
+
+// Ana DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', () => {
+    // Tema başlatma
+    const themeSwitch = document.getElementById('themeSwitch');
+    if (themeSwitch) {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeSwitch.checked = savedTheme === 'dark';
+        
+        if (savedTheme === 'dark') {
+            startMatrixRain();
+        }
+        
+        themeSwitch.addEventListener('change', (e) => {
+            const newTheme = e.target.checked ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            if (newTheme === 'dark') {
+                if (particleCanvas) {
+                    particleCanvas.remove();
+                    particleCanvas = null;
+                }
+                startMatrixRain();
+            } else {
+                clearInterval(matrixRainInterval);
+                const canvas = document.querySelector('.matrix-bg canvas');
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.remove();
+                }
+            }
+        });
     }
-};
+
+    // Sayfa içeriğini yükle
+    document.body.classList.add('theme-transition');
+    renderHome();
+    renderAbout();
+    renderExperience();
+    renderEducation();
+    renderCertifications();
+    renderLanguages();
+    renderProjects();
+    renderContact();
+    setupContactForm();
+
+    // Intersection Observer kurulumu
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                if (entry.target.classList.contains('code-block')) {
+                    entry.target.style.transform = 'translateX(0)';
+                    entry.target.style.opacity = '1';
+                }
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    document.querySelectorAll('.section, .code-block').forEach((element) => {
+        observer.observe(element);
+    });
+
+    // Skill tag hover efektleri
+    document.querySelectorAll('.skill-tag').forEach(tag => {
+        tag.addEventListener('mouseover', () => {
+            tag.style.transform = 'scale(1.1)';
+        });
+        tag.addEventListener('mouseout', () => {
+            tag.style.transform = 'scale(1)';
+        });
+    });
+
+    // Timeline ve diğer özellikleri başlat
+    createTimeline();
+    initTimelineAnimation();
+    optimizePerformance();
+    init3DCards();
+
+    setTimeout(() => {
+        document.body.classList.remove('theme-transition');
+    }, 500);
+});
 
 const updateThemeIcon = (theme) => {
     if (theme === 'dark') {
@@ -316,88 +394,6 @@ async function renderHome() {
     
     renderSkills();
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    document.body.classList.add('theme-transition');
-    initializeTheme();
-    renderHome();
-    renderAbout();
-    renderExperience();
-    renderEducation();
-    renderCertifications();
-    renderLanguages();
-    renderProjects();
-    renderContact();
-    setupContactForm();
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                if (entry.target.classList.contains('code-block')) {
-                    entry.target.style.transform = 'translateX(0)';
-                    entry.target.style.opacity = '1';
-                }
-            }
-        });
-    }, {
-        threshold: 0.1
-    });
-
-    document.querySelectorAll('.section, .code-block').forEach((element) => {
-        observer.observe(element);
-    });
-
-    document.querySelectorAll('.skill-tag').forEach(tag => {
-        tag.addEventListener('mouseover', () => {
-            tag.style.transform = 'scale(1.1)';
-        });
-        tag.addEventListener('mouseout', () => {
-            tag.style.transform = 'scale(1)';
-        });
-    });
-
-    createTimeline();
-    initTimelineAnimation();
-    optimizePerformance();
-    init3DCards();
-
-    setTimeout(() => {
-        document.body.classList.remove('theme-transition');
-    }, 500);
-});
-
-const navLinks = document.querySelectorAll('.nav-links a');
-
-window.addEventListener('scroll', () => {
-    let current = '';
-    const sections = document.querySelectorAll('section');
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        if (scrollY >= (sectionTop - sectionHeight / 3)) {
-            current = section.getAttribute('id');
-        }
-    });
-
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href').slice(1) === current) {
-            link.classList.add('active');
-        }
-    });
-});
-
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        document.querySelector(targetId).scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
-});
 
 function renderAbout() {
     const aboutContent = document.getElementById('about-content');
