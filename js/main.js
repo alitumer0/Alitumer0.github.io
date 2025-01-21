@@ -141,7 +141,11 @@ themeToggle.addEventListener('click', () => {
     updateTheme(newTheme);
 });
 
+// Matrix yağmuru efekti
 function startMatrixRain() {
+    const matrixBg = document.querySelector('.matrix-bg');
+    if (!matrixBg) return;
+
     const canvas = document.createElement('canvas');
     canvas.style.position = 'fixed';
     canvas.style.top = '0';
@@ -160,97 +164,25 @@ function startMatrixRain() {
     const fontSize = 14;
     const columns = canvas.width / fontSize;
     const drops = new Array(Math.floor(columns)).fill(1);
-    
-    // Mouse pozisyonu için değişkenler
-    let mouseX = 0;
-    let mouseY = 0;
-    let mouseRadius = 100;
-    let isClicked = false;
-    let clickX = 0;
-    let clickY = 0;
-    let clickRadius = 0;
-    let clickColor = '#0F0';
-
-    // Mouse olayları
-    canvas.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
-
-    canvas.addEventListener('click', (e) => {
-        isClicked = true;
-        clickX = e.clientX;
-        clickY = e.clientY;
-        clickRadius = 0;
-        // Rastgele renk seç
-        const colors = ['#0F0', '#00F', '#F00', '#FF0', '#0FF', '#F0F'];
-        clickColor = colors[Math.floor(Math.random() * colors.length)];
-    });
 
     function draw() {
-        // Yarı saydam siyah arka plan
         ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        ctx.fillStyle = '#0F0';
+        ctx.font = `${fontSize}px monospace`;
+
         for (let i = 0; i < drops.length; i++) {
-            const x = i * fontSize;
-            const y = drops[i] * fontSize;
-
-            // Mouse pozisyonuna yakınlık hesapla
-            const distanceToMouse = Math.sqrt(
-                Math.pow(x - mouseX, 2) + 
-                Math.pow(y - mouseY, 2)
-            );
-
-            // Tıklama dalgası efekti
-            let clickEffect = 0;
-            if (isClicked) {
-                const distanceToClick = Math.sqrt(
-                    Math.pow(x - clickX, 2) + 
-                    Math.pow(y - clickY, 2)
-                );
-                if (distanceToClick < clickRadius) {
-                    clickEffect = 1 - (distanceToClick / clickRadius);
-                }
-            }
-
-            // Karakter ve renk ayarları
             const text = characters[Math.floor(Math.random() * characters.length)];
-            
-            if (distanceToMouse < mouseRadius) {
-                // Mouse yakınındaki karakterler için özel efekt
-                const intensity = 1 - (distanceToMouse / mouseRadius);
-                ctx.fillStyle = `rgba(0, 255, 0, ${0.5 + intensity * 0.5})`;
-                ctx.font = `${fontSize + intensity * 8}px monospace`;
-            } else if (clickEffect > 0) {
-                // Tıklama dalgası efekti
-                ctx.fillStyle = clickColor;
-                ctx.font = `${fontSize + clickEffect * 10}px monospace`;
-            } else {
-                // Normal karakterler
-                ctx.fillStyle = '#0F0';
-                ctx.font = `${fontSize}px monospace`;
-            }
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-            ctx.fillText(text, x, y);
-
-            // Karakterlerin düşme hızını ayarla
             if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                 drops[i] = 0;
             }
             drops[i]++;
         }
-
-        // Tıklama dalgası animasyonu
-        if (isClicked) {
-            clickRadius += 10;
-            if (clickRadius > Math.max(canvas.width, canvas.height)) {
-                isClicked = false;
-            }
-        }
     }
 
-    // Pencere boyutu değiştiğinde canvas'ı güncelle
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
