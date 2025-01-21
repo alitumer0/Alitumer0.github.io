@@ -128,7 +128,12 @@ const cvData = {
         {
             language: "Turkish",
             level: "Native",
-            icon: `<img src="assets/images/Turk-Bayrak.png" alt="Turkish Flag" style="width: 100%; height: 100%; object-fit: contain;">`
+            icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+                    <rect width="1200" height="800" fill="#E30A17"/>
+                    <circle cx="425" cy="400" r="200" fill="#ffffff"/>
+                    <circle cx="475" cy="400" r="160" fill="#E30A17"/>
+                    <polygon fill="#ffffff" points="583.334,400 764.235,458.779 652.431,304.894 652.431,495.106 764.235,341.221"/>
+                  </svg>`
         }
     ]
 }; 
