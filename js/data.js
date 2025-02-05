@@ -53,6 +53,13 @@ const cvData = {
             technologies: ["JavaScript", "Browser APIs"],
             link: "https://github.com/alitumer0/text-summarizer",
             preview: "assets/images/summarizer-logo.png"
+        },
+        {
+            title: "Kütüphane Otomasyon Sistemi",
+            description: "Modern kütüphane yönetim sistemi ASP.NET MVC ile geliştirilmiştir. Kitap ödünç alma, iade ve envanter yönetimi özellikleri içerir.",
+            technologies: ["ASP.NET MVC", "Entity Framework", "SQL Server", "Bootstrap", "HTML/CSS"],
+            link: "https://github.com/alitumer0/KutuphaneOtomasyonSystem2",
+            preview: "assets/images/Library Otomation System Logo.jpg"
         }
     ],
     education: [
