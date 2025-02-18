@@ -60,6 +60,13 @@ const cvData = {
             technologies: ["ASP.NET MVC", "Entity Framework", "SQL Server", "Bootstrap", "HTML/CSS"],
             link: "https://github.com/alitumer0/KutuphaneOtomasyonSystem2",
             preview: "assets/images/Library Otomation System Logo.jpg"
+        },
+        {
+            title: "Depo-Zimmet Yönetimi Web Uygulaması",
+            description: "Depo ve zimmet yönetimi uygulaması ASP.NET Core MVC ile geliştirilmiştir. Kullanıcı yönetimi, envanter takibi, zimmet işlemleri gibi özellikler içerir.",
+            technologies: ["ASP.NET Core MVC", "Entity Framework", "SQL Server", "Bootstrap", "HTML/CSS"],
+            link: "https://github.com/alitumer0/Varlik-Zimmet-Depo-Yonetimi",
+            preview: "assets/images/Depo-Zimmet Yönetimi Web Uygulaması LOGO.jpg"
         }
     ],
     education: [
