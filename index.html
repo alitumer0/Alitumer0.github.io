@@ -15,9 +15,14 @@
     <title>Ali Tümer - Full Stack Developer</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fira-code@6.2.0/distr/fira_code.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/data.js" defer></script>
     <script src="js/main.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
@@ -27,6 +32,7 @@
 </head>
 <body>
     <div class="matrix-bg"></div>
+    <div class="scroll-progress" aria-hidden="true"></div>
     
     <div class="theme-switch">
         <input type="checkbox" id="themeSwitch" class="theme-switch__checkbox">
@@ -47,75 +53,142 @@
         </label>
     </div>
 
-    <nav class="right-nav">
-        <ul class="nav-links">
+    <header class="topbar">
+        <div class="container topbar-content">
+            <div class="brand">
+                <span class="brand-mark">AT</span>
+                <div class="brand-text">
+                    <span class="brand-name">Ali Tümer</span>
+                    <span class="brand-role">Full Stack Developer</span>
+                </div>
+            </div>
+            <nav class="right-nav">
+                <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
             <li><a href="#experience">Experience</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#certifications">Certifications</a></li>
+            <li><a href="#languages">Languages</a></li>
             <li><a href="#projects">Projects</a></li>
             <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
     <main class="main-content">
-        <section id="home" class="section">
-            <div class="container">
-                <div class="profile-container">
-                    <div class="profile-image-wrapper">
-                        <div class="profile-image" id="profile-image"></div>
+        <section id="home" class="section hero-section">
+            <div class="container hero">
+                <div class="hero-content" data-aos="fade-right">
+                    <p class="eyebrow">Software Developer • Modern UI • Scalable Systems</p>
+                    <h1 id="name"></h1>
+                    <h2 id="title"></h2>
+                    <p id="headline" class="hero-summary"></p>
+                    <div class="hero-actions">
+                        <a class="btn primary" href="#projects">View Projects</a>
+                        <a class="btn ghost" href="#contact">Hire Me</a>
+                    </div>
+                    <div class="hero-stats" id="stats"></div>
+                </div>
+                <div class="hero-card" data-aos="fade-left">
+                    <div class="profile-container">
+                        <div class="profile-image-wrapper">
+                            <div class="profile-image" id="profile-image"></div>
+                        </div>
+                    </div>
+                    <div class="hero-card-body">
+                        <div class="hero-contact" id="hero-contact"></div>
+                        <div class="hero-tags" id="hero-tags"></div>
                     </div>
                 </div>
-                <h1 id="name"></h1>
-                <h2 id="title"></h2>
-                <div id="skills" class="skills-container"></div>
             </div>
         </section>
 
         <section id="about" class="section">
             <div class="container">
-                <h2>About Me</h2>
-                <div id="about-content"></div>
+                <div class="section-heading" data-aos="fade-up">
+                    <h2>About Me</h2>
+                    <p>Modern UI and product-focused engineering for high-impact digital experiences.</p>
+                </div>
+                <div class="about-grid">
+                    <div id="about-content" class="about-code" data-aos="fade-right"></div>
+                    <div class="about-highlights" id="about-highlights" data-aos="fade-left"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="section">
+            <div class="container">
+                <div class="section-heading" data-aos="fade-up">
+                    <h2>Core Skills</h2>
+                    <p>Tooling and technologies I use to design, build, and ship modern applications.</p>
+                </div>
+                <div class="skills-carousel swiper" data-aos="fade-up">
+                    <div class="swiper-wrapper" id="skills-carousel"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
             </div>
         </section>
 
         <section id="experience" class="section">
             <div class="container">
-                <h2>Experience</h2>
-                <div id="experience-content"></div>
+                <div class="section-heading" data-aos="fade-up">
+                    <h2>Experience</h2>
+                    <p>Leadership, delivery, and continuous improvement across full-stack roles.</p>
+                </div>
+                <div id="experience-content" class="experience-timeline"></div>
             </div>
         </section>
 
         <section id="education" class="section">
             <div class="container">
-                <h2>Education</h2>
+                <div class="section-heading" data-aos="fade-up">
+                    <h2>Education</h2>
+                    <p>Academic and professional training in software engineering and design.</p>
+                </div>
                 <div id="education-content" class="education-grid"></div>
             </div>
         </section>
 
         <section id="certifications" class="section">
             <div class="container">
-                <h2>Certifications</h2>
+                <div class="section-heading" data-aos="fade-up">
+                    <h2>Certifications</h2>
+                    <p>Validated expertise and continuous learning milestones.</p>
+                </div>
                 <div id="certifications-content" class="certifications-grid"></div>
             </div>
         </section>
 
         <section id="languages" class="section">
             <div class="container">
-                <h2>Languages</h2>
+                <div class="section-heading" data-aos="fade-up">
+                    <h2>Languages</h2>
+                    <p>Cross-cultural communication for global product teams.</p>
+                </div>
                 <div id="languages-content" class="languages-grid"></div>
             </div>
         </section>
 
         <section id="projects" class="section">
             <div class="container">
-                <h2>Projects</h2>
+                <div class="section-heading" data-aos="fade-up">
+                    <h2>Projects</h2>
+                    <p>Case studies showcasing impactful engineering and interface design.</p>
+                </div>
+                <div class="project-filters" id="project-filters" data-aos="fade-up"></div>
                 <div id="projects-content" class="projects-grid"></div>
             </div>
         </section>
 
         <section id="contact" class="section">
             <div class="container">
-                <h2>Contact</h2>
+                <div class="section-heading" data-aos="fade-up">
+                    <h2>Contact</h2>
+                    <p>Let’s build a delightful product together. Reach out anytime.</p>
+                </div>
                 <div class="contact-content">
                     <div id="contact-info"></div>
                     <form id="contact-form" class="contact-form">
@@ -135,4 +208,4 @@
         </div>
     </footer>
 </body>
-</html> 
+</html>
