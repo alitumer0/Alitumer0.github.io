@@ -2409,6 +2409,20 @@ body {
   border-radius: 999px;
 }
 
+.experience-list {
+  margin-top: 0.75rem;
+  padding-left: 1.2rem;
+  color: var(--text-secondary);
+  display: grid;
+  gap: 0.4rem;
+}
+
+.skills-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
 .education-grid,
 .certifications-grid,
 .languages-grid,

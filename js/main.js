@@ -50,6 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCertifications();
     renderLanguages();
     renderProjects();
+    renderOngoingProjects();
+    renderProfessionalSkills();
+    renderVolunteer();
     renderHeroExtras();
     renderHighlights();
     renderSkillsCarousel();
@@ -323,8 +326,14 @@ function renderExperience() {
         <div class="experience-item" data-aos="fade-up">
             <h3 class="syntax-variable">${exp.title}</h3>
             <h4 class="syntax-string">${exp.company}</h4>
+            ${exp.location ? `<p class="syntax-string">${exp.location}</p>` : ''}
             <p class="period syntax-number">${exp.period}</p>
-            <p class="syntax-string">${exp.description}</p>
+            ${exp.description ? `<p class="syntax-string">${exp.description}</p>` : ''}
+            ${exp.highlights ? `
+                <ul class="experience-list">
+                    ${exp.highlights.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            ` : ''}
         </div>
     `).join('');
 }
@@ -336,6 +345,7 @@ function renderEducation() {
             <img src="${edu.logo}" alt="${edu.institution} logo" class="education-logo">
             <h3 class="syntax-variable">${edu.degree}</h3>
             <h4 class="syntax-string">${edu.institution}</h4>
+            ${edu.location ? `<p class="syntax-string">${edu.location}</p>` : ''}
             <p class="education-period syntax-number">${edu.period}</p>
             <p class="education-description syntax-string">${edu.description}</p>
         </div>
@@ -423,6 +433,51 @@ function renderProjects() {
     });
 }
 
+function renderOngoingProjects() {
+    const ongoingContent = document.getElementById('ongoing-projects-content');
+    if (!ongoingContent) return;
+    ongoingContent.innerHTML = cvData.ongoingProjects.map(project => `
+        <div class="project-card" data-aos="fade-up">
+            <div class="project-info">
+                <h3 class="syntax-variable">${project.title}</h3>
+                <p class="project-description syntax-string">${project.description}</p>
+                <div class="technologies">
+                    ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderProfessionalSkills() {
+    const skillsContent = document.getElementById('professional-skills-content');
+    if (!skillsContent) return;
+    skillsContent.innerHTML = cvData.professionalSkills.map(skill => `
+        <div class="skill-slide" data-aos="fade-up">
+            <h3>${skill.category}</h3>
+            <ul class="experience-list">
+                ${skill.items.map(item => `<li>${item}</li>`).join('')}
+            </ul>
+        </div>
+    `).join('');
+}
+
+function renderVolunteer() {
+    const volunteerContent = document.getElementById('volunteer-content');
+    if (!volunteerContent) return;
+    volunteerContent.innerHTML = cvData.volunteerExperience.map(item => `
+        <div class="experience-item" data-aos="fade-up">
+            <h3 class="syntax-variable">${item.organization}</h3>
+            <h4 class="syntax-string">${item.role}</h4>
+            <p class="syntax-string">${item.location}</p>
+            <p class="period syntax-number">${item.period}</p>
+            <ul class="experience-list">
+                ${item.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
+            </ul>
+        </div>
+    `).join('');
+}
+
 function renderContact() {
     const contactInfo = document.getElementById('contact-info');
     contactInfo.innerHTML = `
@@ -434,6 +489,10 @@ function renderContact() {
                     <i class="ri-mail-line"></i>
                     ${cvData.contact.email}
                 </a>
+                <a href="tel:${cvData.contact.phone}">
+                    <i class="ri-smartphone-line"></i>
+                    ${cvData.contact.phone}
+                </a>
                 <a href="https://${cvData.contact.linkedin}" target="_blank">
                     <i class="ri-linkedin-box-line"></i>
                     ${cvData.contact.linkedin}
@@ -441,6 +500,10 @@ function renderContact() {
                 <a href="https://${cvData.contact.github}" target="_blank">
                     <i class="ri-github-line"></i>
                     ${cvData.contact.github}
+                </a>
+                <a href="https://${cvData.contact.portfolio}" target="_blank">
+                    <i class="ri-global-line"></i>
+                    ${cvData.contact.portfolio}
                 </a>
             </div>
         </div>
@@ -456,6 +519,10 @@ function renderHeroExtras() {
                 <i class="ri-mail-line"></i>
                 ${cvData.contact.email}
             </a>
+            <a href="tel:${cvData.contact.phone}">
+                <i class="ri-smartphone-line"></i>
+                ${cvData.contact.phone}
+            </a>
             <a href="https://${cvData.contact.linkedin}" target="_blank">
                 <i class="ri-linkedin-box-line"></i>
                 ${cvData.contact.linkedin}
@@ -463,6 +530,10 @@ function renderHeroExtras() {
             <a href="https://${cvData.contact.github}" target="_blank">
                 <i class="ri-github-line"></i>
                 ${cvData.contact.github}
+            </a>
+            <a href="https://${cvData.contact.portfolio}" target="_blank">
+                <i class="ri-global-line"></i>
+                ${cvData.contact.portfolio}
             </a>
         `;
     }
