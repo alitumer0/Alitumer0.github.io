@@ -2,7 +2,6 @@
 let matrixRainInterval;
 let particleCanvas = null;
 
-const themeToggle = document.querySelector('.theme-toggle');
 const htmlElement = document.documentElement;
 const matrixBg = document.querySelector('.matrix-bg');
 
@@ -51,8 +50,17 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCertifications();
     renderLanguages();
     renderProjects();
+    renderOngoingProjects();
+    renderProfessionalSkills();
+    renderVolunteer();
+    renderHeroExtras();
+    renderHighlights();
+    renderSkillsCarousel();
+    renderProjectFilters();
     renderContact();
     setupContactForm();
+    initScrollProgress();
+    initLibraries();
 
     // Intersection Observer kurulumu
     const observer = new IntersectionObserver((entries) => {
@@ -73,19 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(element);
     });
 
-    // Skill tag hover efektleri
-    document.querySelectorAll('.skill-tag').forEach(tag => {
-        tag.addEventListener('mouseover', () => {
-            tag.style.transform = 'scale(1.1)';
-        });
-        tag.addEventListener('mouseout', () => {
-            tag.style.transform = 'scale(1)';
-        });
-    });
-
-    // Timeline ve diğer özellikleri başlat
-    createTimeline();
-    initTimelineAnimation();
     optimizePerformance();
     init3DCards();
 
@@ -93,19 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.remove('theme-transition');
     }, 500);
 });
-
-const updateThemeIcon = (theme) => {
-    if (theme === 'dark') {
-        if (particleCanvas) {
-            particleCanvas.remove();
-            particleCanvas = null;
-        }
-        startMatrixRain();
-    } else {
-        stopMatrixRain();
-        particleCanvas = startParticleEffect();
-    }
-};
 
 function updateTheme(newTheme) {
     document.body.classList.add('theme-transition');
@@ -134,12 +116,6 @@ function updateTheme(newTheme) {
         document.body.classList.remove('theme-transition');
     }, 500);
 }
-
-themeToggle.addEventListener('click', () => {
-    const currentTheme = htmlElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    updateTheme(newTheme);
-});
 
 // Matrix yağmuru efekti
 function startMatrixRain() {
@@ -318,11 +294,16 @@ async function renderHome() {
 
     const nameElement = document.getElementById('name');
     const titleElement = document.getElementById('title');
+    const headlineElement = document.getElementById('headline');
     
     await typeWriterEffect(nameElement, cvData.name);
     addCursorAnimation(nameElement);
     
     await typeWriterEffect(titleElement, cvData.title);
+
+    if (headlineElement) {
+        headlineElement.textContent = cvData.about;
+    }
     
     renderSkills();
 }
@@ -342,11 +323,17 @@ function renderAbout() {
 function renderExperience() {
     const experienceContent = document.getElementById('experience-content');
     experienceContent.innerHTML = cvData.experience.map(exp => `
-        <div class="experience-item">
+        <div class="experience-item" data-aos="fade-up">
             <h3 class="syntax-variable">${exp.title}</h3>
             <h4 class="syntax-string">${exp.company}</h4>
+            ${exp.location ? `<p class="syntax-string">${exp.location}</p>` : ''}
             <p class="period syntax-number">${exp.period}</p>
-            <p class="syntax-string">${exp.description}</p>
+            ${exp.description ? `<p class="syntax-string">${exp.description}</p>` : ''}
+            ${exp.highlights ? `
+                <ul class="experience-list">
+                    ${exp.highlights.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            ` : ''}
         </div>
     `).join('');
 }
@@ -358,6 +345,7 @@ function renderEducation() {
             <img src="${edu.logo}" alt="${edu.institution} logo" class="education-logo">
             <h3 class="syntax-variable">${edu.degree}</h3>
             <h4 class="syntax-string">${edu.institution}</h4>
+            ${edu.location ? `<p class="syntax-string">${edu.location}</p>` : ''}
             <p class="education-period syntax-number">${edu.period}</p>
             <p class="education-description syntax-string">${edu.description}</p>
         </div>
@@ -367,7 +355,7 @@ function renderEducation() {
 function renderCertifications() {
     const certificationsContent = document.getElementById('certifications-content');
     certificationsContent.innerHTML = cvData.certifications.map(cert => `
-        <div class="certification-item">
+        <div class="certification-item" data-aos="zoom-in">
             <img src="${cert.logo}" alt="${cert.issuer} logo" class="certification-logo">
             <h3 class="syntax-variable">${cert.title}</h3>
             <p class="certification-issuer syntax-string">${cert.issuer}</p>
@@ -392,7 +380,7 @@ function renderCertifications() {
 function renderLanguages() {
     const languagesContent = document.getElementById('languages-content');
     languagesContent.innerHTML = cvData.languages.map(lang => `
-        <div class="language-item">
+        <div class="language-item" data-aos="fade-up">
             <div class="language-flag">${lang.icon}</div>
             <h3 class="language-name syntax-variable">${lang.language}</h3>
             <p class="language-level">${lang.level}</p>
@@ -416,7 +404,7 @@ function renderLanguages() {
 function renderProjects() {
     const projectsContent = document.getElementById('projects-content');
     projectsContent.innerHTML = cvData.projects.map(project => `
-        <div class="project-card">
+        <div class="project-card" data-tech="${project.technologies.join(',')}" data-aos="fade-up">
             <div class="project-preview">
                 <img src="${project.preview}" alt="${project.title} preview">
                 <div class="project-overlay">
@@ -445,18 +433,265 @@ function renderProjects() {
     });
 }
 
+function renderOngoingProjects() {
+    const ongoingContent = document.getElementById('ongoing-projects-content');
+    if (!ongoingContent) return;
+    ongoingContent.innerHTML = cvData.ongoingProjects.map(project => `
+        <div class="project-card" data-aos="fade-up">
+            <div class="project-info">
+                <h3 class="syntax-variable">${project.title}</h3>
+                <p class="project-description syntax-string">${project.description}</p>
+                <div class="technologies">
+                    ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderProfessionalSkills() {
+    const skillsContent = document.getElementById('professional-skills-content');
+    if (!skillsContent) return;
+    skillsContent.innerHTML = cvData.professionalSkills.map(skill => `
+        <div class="skill-slide" data-aos="fade-up">
+            <h3>${skill.category}</h3>
+            <ul class="experience-list">
+                ${skill.items.map(item => `<li>${item}</li>`).join('')}
+            </ul>
+        </div>
+    `).join('');
+}
+
+function renderVolunteer() {
+    const volunteerContent = document.getElementById('volunteer-content');
+    if (!volunteerContent) return;
+    volunteerContent.innerHTML = cvData.volunteerExperience.map(item => `
+        <div class="experience-item" data-aos="fade-up">
+            <h3 class="syntax-variable">${item.organization}</h3>
+            <h4 class="syntax-string">${item.role}</h4>
+            <p class="syntax-string">${item.location}</p>
+            <p class="period syntax-number">${item.period}</p>
+            <ul class="experience-list">
+                ${item.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
+            </ul>
+        </div>
+    `).join('');
+}
+
 function renderContact() {
     const contactInfo = document.getElementById('contact-info');
     contactInfo.innerHTML = `
-        <div class="code-block">
-            <span class="comment">// Contact information</span>
-            <span class="keyword">const</span> contact = {
-                <span class="property">"email"</span>: <span class="string">"<a href="mailto:${cvData.contact.email}" class="contact-link">${cvData.contact.email}</a>"</span>,
-                <span class="property">"linkedin"</span>: <span class="string">"<a href="https://${cvData.contact.linkedin}" target="_blank" class="contact-link">${cvData.contact.linkedin}</a>"</span>,
-                <span class="property">"github"</span>: <span class="string">"<a href="https://${cvData.contact.github}" target="_blank" class="contact-link">${cvData.contact.github}</a>"</span>
-            };
+        <div class="contact-card">
+            <h3>Let’s Collaborate</h3>
+            <p class="syntax-string">${cvData.about}</p>
+            <div class="contact-list">
+                <a href="mailto:${cvData.contact.email}">
+                    <i class="ri-mail-line"></i>
+                    ${cvData.contact.email}
+                </a>
+                <a href="tel:${cvData.contact.phone}">
+                    <i class="ri-smartphone-line"></i>
+                    ${cvData.contact.phone}
+                </a>
+                <a href="https://${cvData.contact.linkedin}" target="_blank">
+                    <i class="ri-linkedin-box-line"></i>
+                    ${cvData.contact.linkedin}
+                </a>
+                <a href="https://${cvData.contact.github}" target="_blank">
+                    <i class="ri-github-line"></i>
+                    ${cvData.contact.github}
+                </a>
+                <a href="https://${cvData.contact.portfolio}" target="_blank">
+                    <i class="ri-global-line"></i>
+                    ${cvData.contact.portfolio}
+                </a>
+            </div>
         </div>
     `;
+}
+
+function renderHeroExtras() {
+    const heroContact = document.getElementById('hero-contact');
+    const heroTags = document.getElementById('hero-tags');
+    if (heroContact) {
+        heroContact.innerHTML = `
+            <a href="mailto:${cvData.contact.email}">
+                <i class="ri-mail-line"></i>
+                ${cvData.contact.email}
+            </a>
+            <a href="tel:${cvData.contact.phone}">
+                <i class="ri-smartphone-line"></i>
+                ${cvData.contact.phone}
+            </a>
+            <a href="https://${cvData.contact.linkedin}" target="_blank">
+                <i class="ri-linkedin-box-line"></i>
+                ${cvData.contact.linkedin}
+            </a>
+            <a href="https://${cvData.contact.github}" target="_blank">
+                <i class="ri-github-line"></i>
+                ${cvData.contact.github}
+            </a>
+            <a href="https://${cvData.contact.portfolio}" target="_blank">
+                <i class="ri-global-line"></i>
+                ${cvData.contact.portfolio}
+            </a>
+        `;
+    }
+
+    if (heroTags) {
+        const tags = cvData.skills.slice(0, 6).map(skill => `
+            <span class="hero-tag">${skill.name}</span>
+        `).join('');
+        heroTags.innerHTML = tags;
+    }
+}
+
+function renderHighlights() {
+    const highlightsContainer = document.getElementById('about-highlights');
+    const statsContainer = document.getElementById('stats');
+    if (!highlightsContainer) return;
+
+    const totalProjects = cvData.projects.length;
+    const totalCerts = cvData.certifications.length;
+    const experienceYears = calculateExperienceYears();
+
+    highlightsContainer.innerHTML = `
+        <div class="highlight-card">
+            <h4>Product-minded Engineering</h4>
+            <p>Clean architecture, pixel-perfect UI, and scalable systems that keep users engaged.</p>
+        </div>
+        <div class="highlight-card">
+            <h4>${totalProjects}+ Shipped Projects</h4>
+            <p>From enterprise dashboards to productivity extensions, delivering end-to-end solutions.</p>
+        </div>
+        <div class="highlight-card">
+            <h4>${totalCerts}+ Certifications</h4>
+            <p>Continuous learning across software engineering, automation, and team collaboration.</p>
+        </div>
+    `;
+
+    if (statsContainer) {
+        statsContainer.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-value">${experienceYears}+</div>
+                <div class="stat-label">Years Experience</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${totalProjects}</div>
+                <div class="stat-label">Projects Delivered</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${cvData.skills.length}</div>
+                <div class="stat-label">Core Skills</div>
+            </div>
+        `;
+    }
+}
+
+function calculateExperienceYears() {
+    const yearMatches = cvData.experience
+        .flatMap(exp => exp.period.match(/\d{4}/g) || [])
+        .map(Number);
+    if (!yearMatches.length) return 1;
+    const minYear = Math.min(...yearMatches);
+    const maxYear = Math.max(...yearMatches, new Date().getFullYear());
+    return Math.max(1, maxYear - minYear);
+}
+
+function renderSkillsCarousel() {
+    const carousel = document.getElementById('skills-carousel');
+    if (!carousel) return;
+    carousel.innerHTML = cvData.skills.map(skill => `
+        <div class="swiper-slide">
+            <div class="skill-slide">
+                <h3>${skill.name}</h3>
+                <span>Explore documentation and best practices.</span>
+                ${skill.link ? `<a href="${skill.link}" target="_blank" class="contact-link">Learn more</a>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderProjectFilters() {
+    const filterContainer = document.getElementById('project-filters');
+    if (!filterContainer) return;
+
+    const technologies = new Set(['All']);
+    cvData.projects.forEach(project => {
+        project.technologies.forEach(tech => technologies.add(tech));
+    });
+
+    filterContainer.innerHTML = Array.from(technologies).map((tech, index) => `
+        <button class="filter-btn ${index === 0 ? 'active' : ''}" data-filter="${tech}">${tech}</button>
+    `).join('');
+
+    filterContainer.querySelectorAll('.filter-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            filterContainer.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            filterProjects(button.dataset.filter);
+        });
+    });
+}
+
+function filterProjects(filter) {
+    document.querySelectorAll('.project-card').forEach(card => {
+        const techList = card.dataset.tech || '';
+        if (filter === 'All' || techList.includes(filter)) {
+            card.style.display = 'grid';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+function initScrollProgress() {
+    const progress = document.querySelector('.scroll-progress');
+    if (!progress) return;
+
+    window.addEventListener('scroll', () => {
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        const progressWidth = total ? (window.scrollY / total) * 100 : 0;
+        progress.style.width = `${progressWidth}%`;
+    });
+}
+
+function initLibraries() {
+    if (window.AOS) {
+        window.AOS.init({
+            duration: 800,
+            once: true
+        });
+    }
+
+    if (window.Swiper) {
+        new window.Swiper('.skills-carousel', {
+            slidesPerView: 1.2,
+            spaceBetween: 16,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true
+            },
+            breakpoints: {
+                640: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 }
+            }
+        });
+    }
+
+    if (window.gsap) {
+        window.gsap.from('.hero-content', {
+            opacity: 0,
+            y: 40,
+            duration: 1
+        });
+        window.gsap.from('.hero-card', {
+            opacity: 0,
+            y: 40,
+            duration: 1,
+            delay: 0.2
+        });
+    }
 }
 
 function setupContactForm() {
@@ -523,6 +758,9 @@ function setupContactForm() {
 
 async function renderSkills() {
     const skillsContainer = document.querySelector('.skills-container');
+    if (!skillsContainer) {
+        return;
+    }
     skillsContainer.innerHTML = ''; 
     
     for (const skill of cvData.skills) {
@@ -557,79 +795,6 @@ async function renderSkills() {
         tag.addEventListener('mouseout', () => {
             tag.style.transform = 'scale(1)';
         });
-    });
-}
-
-const sidebarToggle = document.querySelector('.sidebar-toggle');
-const sidebar = document.querySelector('.sidebar');
-const mainContent = document.querySelector('.main-content');
-const sidebarLinks = document.querySelectorAll('.sidebar-links a');
-
-if (sidebarToggle && sidebar && mainContent) {
-    sidebarToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-        mainContent.classList.toggle('shifted');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 768) {
-            if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
-                sidebar.classList.remove('active');
-                mainContent.classList.remove('shifted');
-            }
-        }
-    });
-
-    if (sidebarLinks) {
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.remove('active');
-                    mainContent.classList.remove('shifted');
-                }
-            });
-        });
-    }
-}
-
-// Timeline Animation
-function createTimeline() {
-    if (!cvData || !cvData.experience) return;
-    
-    const timeline = document.querySelector('.timeline');
-    if (!timeline) return;
-
-    cvData.experience.forEach((exp, index) => {
-        const timelineItem = document.createElement('div');
-        timelineItem.className = 'timeline-item';
-        
-        timelineItem.innerHTML = `
-            <div class="timeline-content">
-                <h3>${exp.title}</h3>
-                <h4>${exp.company}</h4>
-                <p class="date">${exp.date}</p>
-                <p>${exp.description}</p>
-            </div>
-        `;
-        
-        timeline.appendChild(timelineItem);
-    });
-}
-
-// Intersection Observer for Timeline Animation
-function initTimelineAnimation() {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, {
-        threshold: 0.1
-    });
-
-    document.querySelectorAll('.timeline-item').forEach(item => {
-        observer.observe(item);
     });
 }
 
