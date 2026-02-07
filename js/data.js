@@ -1,6 +1,7 @@
 const cvData = {
-    name: "Ali Eren Tümer",
-    title: "Full-Stack Developer",
+    name: "ALI TÜMER",
+    title: "Architecting the Future of Web & Mobile.",
+    heroHeadline: "Creative technologist blending immersive 3D, expressive motion, and high-performance interfaces.",
     profileImage: "assets/images/profile.jpg",
     contact: {
         email: "aetumer50@gmail.com",
@@ -68,32 +69,45 @@ const cvData = {
     ],
     projects: [
         {
+            title: "Whats My Fridge",
+            description: "Ingredient-to-recipe intelligence with a playful 3D fridge interface and glowing interactions.",
+            technologies: ["React", "Three.js", "Tailwind CSS"],
+            link: "https://github.com/alitumer0",
+            preview: "",
+            featured: true,
+            slug: "whats-my-fridge"
+        },
+        {
             title: "Student Management System",
             description: "Comprehensive web application featuring CRUD operations, role-based access, and responsive dashboards.",
             technologies: ["ASP.NET Core", "SQL", "React"],
             link: "https://github.com/alitumer0",
-            preview: "assets/images/rentacar-logo.png"
+            preview: "assets/images/rentacar-logo.png",
+            slug: "student-management-system"
         },
         {
             title: "Asset-Inventory Management System",
             description: "Inventory tracking solution with real-time insights and secure authentication.",
             technologies: ["ASP.NET MVC", "SQL Server", "Bootstrap"],
             link: "https://github.com/alitumer0",
-            preview: "assets/images/Depo-Zimmet Yönetimi Web Uygulaması LOGO.jpg"
+            preview: "assets/images/Depo-Zimmet Yönetimi Web Uygulaması LOGO.jpg",
+            slug: "asset-inventory-management-system"
         },
         {
             title: "Library Automation System",
             description: "Library automation platform enabling borrowing, return, and catalog management workflows.",
             technologies: ["ASP.NET MVC", "SQL Server", "HTML/CSS"],
             link: "https://github.com/alitumer0",
-            preview: "assets/images/Library Otomation System Logo.jpg"
+            preview: "assets/images/Library Otomation System Logo.jpg",
+            slug: "library-automation-system"
         },
         {
             title: "AllerCheck",
             description: "Web app helping users track allergens, manage blacklists, and curate favorite products safely.",
             technologies: ["ASP.NET Core", "REST APIs", "JavaScript"],
             link: "https://github.com/alitumer0",
-            preview: "assets/images/summarizer-logo.png"
+            preview: "assets/images/summarizer-logo.png",
+            slug: "allercheck"
         }
     ],
     ongoingProjects: [
