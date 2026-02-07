@@ -61,6 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setupContactForm();
     initScrollProgress();
     initLibraries();
+    initHeroScene();
+    initFridgeScene();
+    initMagneticButtons();
+    initSidebarNavigation();
+    initGlitchTransitions();
 
     // Intersection Observer kurulumu
     const observer = new IntersectionObserver((entries) => {
@@ -296,13 +301,18 @@ async function renderHome() {
     const titleElement = document.getElementById('title');
     const headlineElement = document.getElementById('headline');
     
-    await typeWriterEffect(nameElement, cvData.name);
-    addCursorAnimation(nameElement);
-    
-    await typeWriterEffect(titleElement, cvData.title);
+    if (nameElement) {
+        await typeWriterEffect(nameElement, cvData.name);
+        addCursorAnimation(nameElement);
+        nameElement.setAttribute('data-text', cvData.name);
+    }
+
+    if (titleElement) {
+        await typeWriterEffect(titleElement, cvData.title);
+    }
 
     if (headlineElement) {
-        headlineElement.textContent = cvData.about;
+        headlineElement.textContent = cvData.heroHeadline || cvData.about;
     }
     
     renderSkills();
@@ -403,32 +413,48 @@ function renderLanguages() {
 
 function renderProjects() {
     const projectsContent = document.getElementById('projects-content');
-    projectsContent.innerHTML = cvData.projects.map(project => `
-        <div class="project-card" data-tech="${project.technologies.join(',')}" data-aos="fade-up">
-            <div class="project-preview">
-                <img src="${project.preview}" alt="${project.title} preview">
-                <div class="project-overlay">
-                    <a href="${project.link}" target="_blank" class="project-link">View Project</a>
+    projectsContent.innerHTML = cvData.projects.map(project => {
+        const isFeatured = project.featured || project.slug === 'whats-my-fridge';
+        return `
+            <div class="project-card ${isFeatured ? 'project-card--featured' : ''}" data-tech="${project.technologies.join(',')}" data-project="${project.slug || ''}" data-aos="fade-up">
+                ${isFeatured ? `
+                    <div class="project-preview project-preview--canvas">
+                        <canvas class="project-canvas" data-fridge-canvas></canvas>
+                        <div class="project-overlay">
+                            <a href="${project.link}" target="_blank" class="project-link magnetic">View Project</a>
+                        </div>
+                    </div>
+                ` : `
+                    <div class="project-preview">
+                        <img src="${project.preview}" alt="${project.title} preview">
+                        <div class="project-overlay">
+                            <a href="${project.link}" target="_blank" class="project-link magnetic">View Project</a>
+                        </div>
+                    </div>
+                `}
+                <div class="project-info">
+                    <h3 class="syntax-variable">${project.title}</h3>
+                    <p class="project-description syntax-string">${project.description}</p>
+                    <div class="technologies">
+                        ${project.technologies.map(tech => 
+                            `<span class="tech-tag">${tech}</span>`
+                        ).join('')}
+                    </div>
                 </div>
             </div>
-            <div class="project-info">
-                <h3 class="syntax-variable">${project.title}</h3>
-                <p class="project-description syntax-string">${project.description}</p>
-                <div class="technologies">
-                    ${project.technologies.map(tech => 
-                        `<span class="tech-tag">${tech}</span>`
-                    ).join('')}
-                </div>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
     document.querySelectorAll('.project-card').forEach(card => {
         card.addEventListener('mouseenter', () => {
             card.querySelector('.project-overlay').style.opacity = '1';
+            if (card.classList.contains('project-card--featured')) {
+                card.classList.add('is-hovered');
+            }
         });
         card.addEventListener('mouseleave', () => {
             card.querySelector('.project-overlay').style.opacity = '0';
+            card.classList.remove('is-hovered');
         });
     });
 }
@@ -1034,4 +1060,272 @@ function startParticleEffect() {
     });
 
     return canvas;
+}
+
+function initHeroScene() {
+    const canvas = document.getElementById('hero-canvas');
+    if (!canvas || !window.THREE) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 60;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const uniforms = {
+        uTime: { value: 0 },
+        uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+    };
+
+    const auraMaterial = new THREE.ShaderMaterial({
+        uniforms,
+        transparent: true,
+        vertexShader: `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            precision highp float;
+            varying vec2 vUv;
+            uniform float uTime;
+
+            vec3 colorA = vec3(0.0196, 0.0196, 0.0196);
+            vec3 colorB = vec3(0.1019, 0.1019, 0.1803);
+
+            vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+            vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+            vec3 permute(vec3 x) { return mod289(((x * 34.0) + 1.0) * x); }
+
+            float snoise(vec2 v) {
+                const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+                                    -0.577350269189626, 0.024390243902439);
+                vec2 i  = floor(v + dot(v, C.yy));
+                vec2 x0 = v - i + dot(i, C.xx);
+                vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+                vec4 x12 = x0.xyxy + C.xxzz;
+                x12.xy -= i1;
+                i = mod289(i);
+                vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0))
+                    + i.x + vec3(0.0, i1.x, 1.0));
+                vec3 m = max(0.5 - vec3(dot(x0, x0), dot(x12.xy, x12.xy), dot(x12.zw, x12.zw)), 0.0);
+                m = m * m;
+                m = m * m;
+                vec3 x = 2.0 * fract(p * C.www) - 1.0;
+                vec3 h = abs(x) - 0.5;
+                vec3 ox = floor(x + 0.5);
+                vec3 a0 = x - ox;
+                m *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h * h);
+                vec3 g;
+                g.x = a0.x * x0.x + h.x * x0.y;
+                g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+                return 130.0 * dot(m, g);
+            }
+
+            void main() {
+                vec2 uv = vUv * 2.0 - 1.0;
+                float noise = snoise(uv * 1.2 + uTime * 0.08);
+                float glow = smoothstep(-0.3, 0.8, noise);
+                vec3 color = mix(colorA, colorB, glow);
+                gl_FragColor = vec4(color, 0.95);
+            }
+        `
+    });
+
+    const auraPlane = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), auraMaterial);
+    auraPlane.position.z = -60;
+    scene.add(auraPlane);
+
+    const particleCount = 180;
+    const geometry = new THREE.SphereGeometry(0.35, 8, 8);
+    const material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.6 });
+    const particles = new THREE.InstancedMesh(geometry, material, particleCount);
+    const dummy = new THREE.Object3D();
+    const particleData = [];
+
+    for (let i = 0; i < particleCount; i++) {
+        const position = new THREE.Vector3(
+            (Math.random() - 0.5) * 80,
+            (Math.random() - 0.5) * 50,
+            (Math.random() - 0.5) * 40
+        );
+        particleData.push({
+            position,
+            velocity: new THREE.Vector3(
+                (Math.random() - 0.5) * 0.05,
+                (Math.random() - 0.5) * 0.05,
+                (Math.random() - 0.5) * 0.02
+            )
+        });
+        dummy.position.copy(position);
+        dummy.updateMatrix();
+        particles.setMatrixAt(i, dummy.matrix);
+    }
+    scene.add(particles);
+
+    const lineGeometry = new THREE.BufferGeometry();
+    const linePositions = new Float32Array(particleCount * 6);
+    lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x7f8cff, transparent: true, opacity: 0.2 });
+    const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+    scene.add(lines);
+
+    const mouse = new THREE.Vector2(0, 0);
+    window.addEventListener('mousemove', (event) => {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    const updateLines = () => {
+        let idx = 0;
+        for (let i = 0; i < particleCount; i++) {
+            const current = particleData[i].position;
+            const next = particleData[(i + 1) % particleCount].position;
+            linePositions[idx++] = current.x;
+            linePositions[idx++] = current.y;
+            linePositions[idx++] = current.z;
+            linePositions[idx++] = next.x;
+            linePositions[idx++] = next.y;
+            linePositions[idx++] = next.z;
+        }
+        lineGeometry.attributes.position.needsUpdate = true;
+    };
+
+    const animate = () => {
+        uniforms.uTime.value += 0.01;
+        const mouseVector = new THREE.Vector3(mouse.x * 20, mouse.y * 12, 0);
+
+        particleData.forEach((particle, index) => {
+            particle.position.add(particle.velocity);
+            const distance = particle.position.distanceTo(mouseVector);
+            if (distance < 12) {
+                const push = particle.position.clone().sub(mouseVector).normalize().multiplyScalar(0.2);
+                particle.position.add(push);
+            }
+
+            if (particle.position.x > 40 || particle.position.x < -40) particle.velocity.x *= -1;
+            if (particle.position.y > 25 || particle.position.y < -25) particle.velocity.y *= -1;
+            if (particle.position.z > 20 || particle.position.z < -20) particle.velocity.z *= -1;
+
+            dummy.position.copy(particle.position);
+            dummy.updateMatrix();
+            particles.setMatrixAt(index, dummy.matrix);
+        });
+        particles.instanceMatrix.needsUpdate = true;
+        updateLines();
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+    });
+}
+
+function initFridgeScene() {
+    const canvas = document.querySelector('[data-fridge-canvas]');
+    if (!canvas || !window.THREE) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+    camera.position.set(0, 2, 6);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambient);
+
+    const spotlight = new THREE.SpotLight(0x88aaff, 1.2);
+    spotlight.position.set(5, 8, 5);
+    scene.add(spotlight);
+
+    const fridgeGroup = new THREE.Group();
+    const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0x2e313a, roughness: 0.4, metalness: 0.2 });
+    const doorMaterial = new THREE.MeshStandardMaterial({ color: 0x3b3f4c, roughness: 0.3, metalness: 0.3, emissive: 0x5fa8ff, emissiveIntensity: 0.2 });
+
+    const body = new THREE.Mesh(new THREE.BoxGeometry(2, 3, 1.6), bodyMaterial);
+    body.position.y = 1.5;
+    fridgeGroup.add(body);
+
+    const door = new THREE.Mesh(new THREE.BoxGeometry(1.8, 2.6, 1.4), doorMaterial);
+    door.position.set(0, 1.4, 0.1);
+    fridgeGroup.add(door);
+
+    const handle = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.3, 0.1), new THREE.MeshStandardMaterial({ color: 0xcbd4ff, metalness: 0.7, roughness: 0.2 }));
+    handle.position.set(0.75, 1.4, 0.85);
+    fridgeGroup.add(handle);
+
+    scene.add(fridgeGroup);
+
+    let glowTarget = 0.2;
+    const card = canvas.closest('.project-card');
+    if (card) {
+        card.addEventListener('mouseenter', () => {
+            glowTarget = 1.1;
+        });
+        card.addEventListener('mouseleave', () => {
+            glowTarget = 0.2;
+        });
+    }
+
+    const animate = () => {
+        fridgeGroup.rotation.y += 0.003;
+        doorMaterial.emissiveIntensity += (glowTarget - doorMaterial.emissiveIntensity) * 0.08;
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    const resizeObserver = new ResizeObserver(() => {
+        const { clientWidth, clientHeight } = canvas;
+        renderer.setSize(clientWidth, clientHeight);
+        camera.aspect = clientWidth / clientHeight;
+        camera.updateProjectionMatrix();
+    });
+    resizeObserver.observe(canvas);
+}
+
+function initMagneticButtons() {
+    const buttons = document.querySelectorAll('.magnetic');
+    buttons.forEach(button => {
+        button.addEventListener('mousemove', (event) => {
+            const rect = button.getBoundingClientRect();
+            const strength = 20;
+            const x = ((event.clientX - rect.left) / rect.width - 0.5) * strength;
+            const y = ((event.clientY - rect.top) / rect.height - 0.5) * strength;
+            button.style.transform = `translate(${x}px, ${y}px)`;
+        });
+        button.addEventListener('mouseleave', () => {
+            button.style.transform = 'translate(0, 0)';
+        });
+    });
+}
+
+function initSidebarNavigation() {
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+    sidebar.addEventListener('mouseenter', () => sidebar.classList.add('is-expanded'));
+    sidebar.addEventListener('mouseleave', () => sidebar.classList.remove('is-expanded'));
+}
+
+function initGlitchTransitions() {
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', () => {
+            document.body.classList.add('is-transitioning');
+            setTimeout(() => document.body.classList.remove('is-transitioning'), 600);
+        });
+    });
 }
