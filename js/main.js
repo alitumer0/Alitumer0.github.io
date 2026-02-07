@@ -1,9 +1,12 @@
 import React, { Suspense, useEffect, useRef, useState } from 'https://esm.sh/react@18.2.0';
 import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
+import htm from 'https://esm.sh/htm@3.1.1';
 import * as THREE from 'https://esm.sh/three@0.162.0';
 import { Canvas, useFrame } from 'https://esm.sh/@react-three/fiber@8.15.19';
 import { ContactShadows, Float, MeshDistortMaterial } from 'https://esm.sh/@react-three/drei@9.100.3';
 import { AnimatePresence, motion } from 'https://esm.sh/framer-motion@11.0.3';
+
+const html = htm.bind(React.createElement);
 
 const titles = ['Full-Stack Developer', 'Game Dev Enthusiast', 'Software Architect'];
 
@@ -104,167 +107,167 @@ function MonolithSphere() {
         }
     });
 
-    return (
-        <Float speed={1.2} rotationIntensity={0.4} floatIntensity={0.6}>
-            <group ref={groupRef}>
-                <mesh ref={glassRef}>
-                    <sphereGeometry args={[1.45, 128, 128]} />
+    return html`
+        <${Float} speed=${1.2} rotationIntensity=${0.4} floatIntensity=${0.6}>
+            <group ref=${groupRef}>
+                <mesh ref=${glassRef}>
+                    <sphereGeometry args=${[1.45, 128, 128]} />
                     <meshPhysicalMaterial
-                        transmission={0.95}
-                        roughness={0.08}
-                        thickness={1.2}
-                        ior={1.4}
-                        clearcoat={1}
-                        iridescence={1}
-                        iridescenceIOR={1.3}
-                        iridescenceThicknessRange={[100, 400]}
+                        transmission=${0.95}
+                        roughness=${0.08}
+                        thickness=${1.2}
+                        ior=${1.4}
+                        clearcoat=${1}
+                        iridescence=${1}
+                        iridescenceIOR=${1.3}
+                        iridescenceThicknessRange=${[100, 400]}
                         color="#5b7cff"
                     />
                 </mesh>
                 <mesh>
-                    <sphereGeometry args={[1.48, 128, 128]} />
-                    <MeshDistortMaterial
-                        distort={0.35}
-                        speed={1.2}
+                    <sphereGeometry args=${[1.48, 128, 128]} />
+                    <${MeshDistortMaterial}
+                        distort=${0.35}
+                        speed=${1.2}
                         color="#3b82f6"
                         transparent
-                        opacity={0.2}
+                        opacity=${0.2}
                     />
                 </mesh>
             </group>
-        </Float>
-    );
+        </${Float}>
+    `;
 }
 
 function MonolithScene() {
-    return (
-        <Canvas
-            camera={{ position: [0, 0, 4], fov: 45 }}
-            dpr={[1, 2]}
+    return html`
+        <${Canvas}
+            camera=${{ position: [0, 0, 4], fov: 45 }}
+            dpr=${[1, 2]}
             className="absolute inset-0"
         >
-            <color attach="background" args={['#030303']} />
-            <fog attach="fog" args={['#050505', 5, 14]} />
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[3, 5, 2]} intensity={1.4} color="#a5b4fc" />
-            <Suspense fallback={null}>
-                <MonolithSphere />
-                <ContactShadows position={[0, -1.8, 0]} opacity={0.6} scale={8} blur={2.5} far={8} />
-            </Suspense>
-        </Canvas>
-    );
+            <color attach="background" args=${['#030303']} />
+            <fog attach="fog" args=${['#050505', 5, 14]} />
+            <ambientLight intensity=${0.5} />
+            <directionalLight position=${[3, 5, 2]} intensity=${1.4} color="#a5b4fc" />
+            <${Suspense} fallback=${null}>
+                <${MonolithSphere} />
+                <${ContactShadows} position=${[0, -1.8, 0]} opacity=${0.6} scale=${8} blur=${2.5} far=${8} />
+            </${Suspense}>
+        </${Canvas}>
+    `;
 }
 
 function SectionHeading({ eyebrow, title, subtitle }) {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.6 }}
+    return html`
+        <${motion.div}
+            initial=${{ opacity: 0, y: 20 }}
+            whileInView=${{ opacity: 1, y: 0 }}
+            viewport=${{ once: true, amount: 0.4 }}
+            transition=${{ duration: 0.6 }}
             className="mb-10"
         >
-            <p className="text-sm uppercase tracking-[0.4em] text-white/40">{eyebrow}</p>
-            <h2 className="text-3xl md:text-4xl font-semibold mt-3">{title}</h2>
-            <p className="text-white/60 mt-3 max-w-2xl">{subtitle}</p>
-        </motion.div>
-    );
+            <p className="text-sm uppercase tracking-[0.4em] text-white/40">${eyebrow}</p>
+            <h2 className="text-3xl md:text-4xl font-semibold mt-3">${title}</h2>
+            <p className="text-white/60 mt-3 max-w-2xl">${subtitle}</p>
+        </${motion.div}>
+    `;
 }
 
 function ExperienceTimeline() {
-    return (
+    return html`
         <div className="relative border-l border-white/10 pl-6">
-            {experience.map((item, index) => (
-                <motion.div
-                    key={item.role}
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.4 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
+            ${experience.map((item, index) => html`
+                <${motion.div}
+                    key=${item.role}
+                    initial=${{ opacity: 0, y: 24 }}
+                    whileInView=${{ opacity: 1, y: 0 }}
+                    viewport=${{ once: true, amount: 0.4 }}
+                    transition=${{ duration: 0.6, delay: index * 0.1 }}
                     className="mb-10 relative"
                 >
                     <span className="absolute -left-[31px] top-2 h-3 w-3 rounded-full bg-accent shadow-[0_0_12px_rgba(59,130,246,0.8)]" />
                     <div className="glass-panel rounded-2xl p-6">
                         <div className="flex flex-wrap items-center justify-between gap-4">
                             <div>
-                                <h3 className="text-xl font-semibold">{item.role}</h3>
-                                <p className="text-white/60">{item.company}</p>
+                                <h3 className="text-xl font-semibold">${item.role}</h3>
+                                <p className="text-white/60">${item.company}</p>
                             </div>
-                            <span className="text-sm text-white/40">{item.period}</span>
+                            <span className="text-sm text-white/40">${item.period}</span>
                         </div>
-                        <p className="text-white/70 mt-4">{item.summary}</p>
+                        <p className="text-white/70 mt-4">${item.summary}</p>
                     </div>
-                </motion.div>
-            ))}
+                </${motion.div}>
+            `)}
         </div>
-    );
+    `;
 }
 
 function SkillsGrid() {
-    return (
+    return html`
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {skills.map((skill, index) => (
-                <motion.div
-                    key={skill}
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.4 }}
-                    transition={{ duration: 0.4, delay: index * 0.05 }}
+            ${skills.map((skill, index) => html`
+                <${motion.div}
+                    key=${skill}
+                    initial=${{ opacity: 0, y: 16 }}
+                    whileInView=${{ opacity: 1, y: 0 }}
+                    viewport=${{ once: true, amount: 0.4 }}
+                    transition=${{ duration: 0.4, delay: index * 0.05 }}
                     className="glass-panel rounded-2xl px-5 py-6"
                 >
-                    <p className="text-lg font-medium">{skill}</p>
+                    <p className="text-lg font-medium">${skill}</p>
                     <p className="text-white/50 text-sm mt-2">Crafted for premium digital experiences.</p>
-                </motion.div>
-            ))}
+                </${motion.div}>
+            `)}
         </div>
-    );
+    `;
 }
 
 function ProjectsGrid() {
-    return (
+    return html`
         <div className="grid gap-6 lg:grid-cols-3">
-            {projects.map((project, index) => (
-                <motion.div
-                    key={project.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.4 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className={`glass-panel rounded-2xl p-6 flex flex-col gap-4 ${project.highlight ? 'glow-card' : ''}`}
+            ${projects.map((project, index) => html`
+                <${motion.div}
+                    key=${project.name}
+                    initial=${{ opacity: 0, y: 20 }}
+                    whileInView=${{ opacity: 1, y: 0 }}
+                    viewport=${{ once: true, amount: 0.4 }}
+                    transition=${{ duration: 0.6, delay: index * 0.1 }}
+                    className=${`glass-panel rounded-2xl p-6 flex flex-col gap-4 ${project.highlight ? 'glow-card' : ''}`}
                 >
                     <div>
-                        <h3 className="text-xl font-semibold">{project.name}</h3>
-                        <p className="text-white/60 mt-2">{project.description}</p>
+                        <h3 className="text-xl font-semibold">${project.name}</h3>
+                        <p className="text-white/60 mt-2">${project.description}</p>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        {project.tags.map((tag) => (
-                            <span key={tag} className="text-xs uppercase tracking-[0.2em] text-white/60 border border-white/10 px-3 py-1 rounded-full">
-                                {tag}
+                        ${project.tags.map((tag) => html`
+                            <span key=${tag} className="text-xs uppercase tracking-[0.2em] text-white/60 border border-white/10 px-3 py-1 rounded-full">
+                                ${tag}
                             </span>
-                        ))}
+                        `)}
                     </div>
-                </motion.div>
-            ))}
+                </${motion.div}>
+            `)}
         </div>
-    );
+    `;
 }
 
 function Hero() {
     const typedText = useTypewriter(titles);
 
-    return (
+    return html`
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-            <MonolithScene />
+            <${MonolithScene} />
             <div className="relative z-10 text-center px-6">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1 }}
+                <${motion.div}
+                    initial=${{ opacity: 0, y: 20 }}
+                    animate=${{ opacity: 1, y: 0 }}
+                    transition=${{ duration: 1 }}
                 >
                     <p className="text-xs uppercase tracking-[0.5em] text-white/50">The Abstract Monolith</p>
                     <h1 className="text-4xl md:text-7xl lg:text-8xl font-semibold tracking-[0.3em] mt-4">ALI TÜMER</h1>
                     <p className="mt-6 text-lg md:text-2xl text-white/70">
-                        <span className="typewriter">{typedText}</span>
+                        <span className="typewriter">${typedText}</span>
                     </p>
                     <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <button className="glass-panel px-6 py-3 rounded-full text-sm uppercase tracking-[0.3em]">
@@ -274,20 +277,20 @@ function Hero() {
                             Download CV
                         </button>
                     </div>
-                </motion.div>
+                </${motion.div}>
             </div>
         </section>
-    );
+    `;
 }
 
 function App() {
-    return (
-        <AnimatePresence mode="wait">
-            <motion.main
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.8 }}
+    return html`
+        <${AnimatePresence} mode="wait">
+            <${motion.main}
+                initial=${{ opacity: 0 }}
+                animate=${{ opacity: 1 }}
+                exit=${{ opacity: 0 }}
+                transition=${{ duration: 0.8 }}
                 className="relative"
             >
                 <div className="scroll-indicator" aria-hidden="true">
@@ -295,38 +298,38 @@ function App() {
                     <span></span>
                     <span></span>
                 </div>
-                <Hero />
+                <${Hero} />
                 <section className="px-6 py-20 max-w-6xl mx-auto">
-                    <SectionHeading
+                    <${SectionHeading}
                         eyebrow="Experience"
                         title="Vertical Timeline"
                         subtitle="A cinematic path through product leadership and immersive development work."
                     />
-                    <ExperienceTimeline />
+                    <${ExperienceTimeline} />
                 </section>
                 <section className="px-6 py-20 max-w-6xl mx-auto">
-                    <SectionHeading
+                    <${SectionHeading}
                         eyebrow="Skills"
                         title="Bento Skill Matrix"
                         subtitle="A curated stack of tools and mindsets for future-facing products."
                     />
-                    <SkillsGrid />
+                    <${SkillsGrid} />
                 </section>
                 <section className="px-6 py-20 max-w-6xl mx-auto">
-                    <SectionHeading
+                    <${SectionHeading}
                         eyebrow="Projects"
                         title="Selected Work"
                         subtitle="Highlighted case studies with a special glow for flagship products."
                     />
-                    <ProjectsGrid />
+                    <${ProjectsGrid} />
                 </section>
                 <footer className="px-6 pb-16 text-center text-white/50">
                     <p>© 2025 Ali Tümer. Crafted in the Abstract Monolith universe.</p>
                 </footer>
-            </motion.main>
-        </AnimatePresence>
-    );
+            </${motion.main}>
+        </${AnimatePresence}>
+    `;
 }
 
 const root = createRoot(document.getElementById('root'));
-root.render(<App />);
+root.render(html`<${App} />`);
