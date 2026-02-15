@@ -275,7 +275,7 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
           </header>
 
           <div className="experience-grid single-col">
-            {content.experience.map((item, index) => (
+            {content.experience.map((item) => (
               <PremiumCard 
                 key={`${item.org}-${item.period}`} 
                 className="experience-card"
