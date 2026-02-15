@@ -22,12 +22,17 @@ type FlowPlaneProps = {
   quality: number;
   reducedMotion: boolean;
   onFpsSample: (fps: number) => void;
+  mousePosition: { x: number; y: number };
 };
 
-function FlowPlane({ themeMode, scrollProgress, fade, intensity, quality, reducedMotion, onFpsSample }: FlowPlaneProps) {
+function FlowPlane({ themeMode, scrollProgress, fade, intensity, quality, reducedMotion, onFpsSample, mousePosition }: FlowPlaneProps) {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const perfRef = useRef({ elapsed: 0, frames: 0 });
   const { viewport, size } = useThree();
+  
+  // Smooth mouse position
+  const smoothMouse = useRef({ x: 0, y: 0 });
+  const targetMouse = useRef({ x: 0, y: 0 });
 
   const uniforms = useMemo(
     () => ({
@@ -37,7 +42,9 @@ function FlowPlane({ themeMode, scrollProgress, fade, intensity, quality, reduce
       uFade: { value: 1 },
       uResolution: { value: new THREE.Vector2(size.width, size.height) },
       uIntensity: { value: 1 },
-      uQuality: { value: quality }
+      uQuality: { value: quality },
+      uMouse: { value: new THREE.Vector2(0, 0) },
+      uMouseInfluence: { value: 0.3 },
     }),
     [quality, size.height, size.width, themeMode]
   );
@@ -51,7 +58,13 @@ function FlowPlane({ themeMode, scrollProgress, fade, intensity, quality, reduce
     material.uniforms.uResolution.value.set(size.width, size.height);
   }, [size.height, size.width]);
 
-  useFrame((_, delta) => {
+  // Update mouse position with smooth interpolation
+  useEffect(() => {
+    targetMouse.current.x = mousePosition.x;
+    targetMouse.current.y = mousePosition.y;
+  }, [mousePosition]);
+
+  useFrame((state, delta) => {
     const material = materialRef.current;
     if (!material) {
       return;
@@ -67,12 +80,17 @@ function FlowPlane({ themeMode, scrollProgress, fade, intensity, quality, reduce
       perf.frames = 0;
     }
 
+    // Smooth mouse interpolation
+    smoothMouse.current.x = THREE.MathUtils.lerp(smoothMouse.current.x, targetMouse.current.x, 0.08);
+    smoothMouse.current.y = THREE.MathUtils.lerp(smoothMouse.current.y, targetMouse.current.y, 0.08);
+
     material.uniforms.uTime.value += reducedMotion ? 0 : delta;
     material.uniforms.uScroll.value = scrollProgress;
     material.uniforms.uTheme.value = THREE.MathUtils.damp(material.uniforms.uTheme.value as number, themeMode === "night" ? 1 : 0, 4, delta);
     material.uniforms.uFade.value = THREE.MathUtils.damp(material.uniforms.uFade.value as number, fade, 5, delta);
     material.uniforms.uIntensity.value = THREE.MathUtils.damp(material.uniforms.uIntensity.value as number, intensity, 5, delta);
     material.uniforms.uQuality.value = THREE.MathUtils.damp(material.uniforms.uQuality.value as number, quality, 4, delta);
+    material.uniforms.uMouse.value.set(smoothMouse.current.x, smoothMouse.current.y);
   });
 
   return (
@@ -101,6 +119,8 @@ function FlowPlane({ themeMode, scrollProgress, fade, intensity, quality, reduce
           uniform vec2 uResolution;
           uniform float uIntensity;
           uniform float uQuality;
+          uniform vec2 uMouse;
+          uniform float uMouseInfluence;
 
           varying vec2 vUv;
 
@@ -163,6 +183,10 @@ function FlowPlane({ themeMode, scrollProgress, fade, intensity, quality, reduce
             vec2 p = uv - 0.5;
             p.x *= uResolution.x / max(1.0, uResolution.y);
 
+            // Mouse influence on the flow field
+            vec2 mouseOffset = (uMouse - 0.5) * uMouseInfluence;
+            p += mouseOffset;
+
             float t = uTime * mix(0.04, 0.22, uIntensity);
             float qScale = mix(0.76, 1.18, uQuality);
 
@@ -180,6 +204,15 @@ function FlowPlane({ themeMode, scrollProgress, fade, intensity, quality, reduce
             vec3 day = paletteDay(field);
             vec3 night = paletteNight(field);
             vec3 color = mix(day, night, uTheme);
+            
+            // Add mouse-reactive glow in night mode
+            if (uTheme > 0.5) {
+              float mouseGlow = 1.0 - length(uv - uMouse) * 1.5;
+              mouseGlow = max(0.0, mouseGlow);
+              vec3 glowColor = vec3(0.0, 0.78, 1.0); // Electric blue
+              color += glowColor * mouseGlow * 0.15;
+            }
+            
             color = mix(color, color * 1.08, ribbon * 0.16 * uIntensity);
 
             float calm = mix(1.0, 0.78, smoothstep(0.0, 0.35, uScroll));
@@ -202,6 +235,20 @@ function FlowPlane({ themeMode, scrollProgress, fade, intensity, quality, reduce
 export function FlowFieldHero({ themeMode, scrollProgress, fade, intensity, reducedMotion, blur = 0 }: FlowFieldHeroProps) {
   const [quality, setQuality] = useState(reducedMotion ? 0.55 : 1);
   const [dprMax, setDprMax] = useState(reducedMotion ? 1 : 1.25);
+  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
+
+  // Track mouse position
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setMousePosition({
+        x: event.clientX / window.innerWidth,
+        y: 1 - (event.clientY / window.innerHeight),
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   const onFpsSample = useCallback(
     (fps: number) => {
@@ -262,9 +309,9 @@ export function FlowFieldHero({ themeMode, scrollProgress, fade, intensity, redu
           quality={quality}
           reducedMotion={reducedMotion}
           onFpsSample={onFpsSample}
+          mousePosition={mousePosition}
         />
       </Canvas>
     </div>
   );
 }
-
