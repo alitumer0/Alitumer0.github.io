@@ -25,7 +25,7 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
   const { language } = usePortfolio();
   const content = getPortfolioContent(language);
   const [caseStudyProject, setCaseStudyProject] = useState<ProjectItem | null>(null);
-  const pageRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
 
   const { featuredProject, regularProjects } = useMemo(() => {
     const featured = content.projects.find((project) => project.featured) ?? content.projects[0] ?? null;
@@ -46,11 +46,30 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
         transition: { duration: 0.45, ease: [0.2, 0.7, 0.2, 1] as [number, number, number, number] }
       };
 
-  // GSAP scroll animations
+  // GSAP Hero and scroll animations
   useEffect(() => {
     if (reducedMotion) return;
 
     const ctx = gsap.context(() => {
+      // Hero animations - Stagger effect on load
+      if (heroRef.current) {
+        const heroElements = heroRef.current.querySelectorAll('.hero-animate');
+        
+        gsap.fromTo(
+          heroElements,
+          { y: 100, opacity: 0, filter: "blur(10px)" },
+          {
+            y: 0,
+            opacity: 1,
+            filter: "blur(0px)",
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power4.out",
+            delay: 0.2,
+          }
+        );
+      }
+
       // Skills section reveal
       const skillsSection = document.querySelector('#skills');
       if (skillsSection) {
@@ -189,23 +208,32 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
           }
         );
       }
-    }, pageRef);
+    });
 
     return () => ctx.revert();
   }, [reducedMotion]);
 
   return (
-    <div ref={pageRef} className="flow-page">
+    <div className="flow-page">
       <SideScrollIndicator labels={content.sectionTitles} />
 
-      {/* Hero Section - Original PremiumCard style */}
-      <section id="hero" data-section-id="hero" className="flow-hero-stage">
-        <PremiumCard as="div" className="hero-premium-card" spotlight>
-          <p className="hero-eyebrow">{content.name}</p>
-          <h1 className="hero-title">{content.title}</h1>
-          <p className="hero-summary">{content.heroHeadline}</p>
+      {/* Hero Section with GSAP Animations */}
+      <section 
+        id="hero" 
+        data-section-id="hero" 
+        className="hero-section-new"
+        ref={heroRef}
+      >
+        {/* Animated background */}
+        <div className="hero-gradient-bg" />
+        <div className="hero-grid" />
+        
+        <div className="hero-content-new">
+          <p className="hero-eyebrow hero-animate">{content.name}</p>
+          <h1 className="hero-title-new hero-animate">{content.title}</h1>
+          <p className="hero-summary hero-animate">{content.heroHeadline}</p>
 
-          <div className="hero-actions">
+          <div className="hero-actions hero-animate">
             <a className="hero-action hero-action-primary" href="#projects">
               {content.cta.projects}
             </a>
@@ -213,7 +241,12 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
               {content.cta.contact}
             </a>
           </div>
-        </PremiumCard>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="scroll-indicator">
+          <div className="scroll-line" />
+        </div>
       </section>
 
       <main className="flow-main-content">
@@ -252,13 +285,6 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
                 <h3>{item.org}</h3>
                 <p className="meta-line strong">{item.role}</p>
                 <p>{item.detail}</p>
-                {/* Animated border indicator */}
-                <div 
-                  className="exp-card-indicator" 
-                  style={{ 
-                    animationDelay: `${index * 0.1}s`
-                  }} 
-                />
               </PremiumCard>
             ))}
           </div>
