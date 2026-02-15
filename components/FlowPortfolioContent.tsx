@@ -2,15 +2,20 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
-import { AirbnbProjectCard } from "@/components/projects/AirbnbProjectCard";
+import { useMemo, useRef, useEffect, useState } from "react";
 import { ProjectCaseStudyModal } from "@/components/projects/ProjectCaseStudyModal";
 import { usePortfolio } from "@/components/providers/PortfolioProvider";
 import { ChatSection } from "@/components/sections/ChatSection";
 import { LanguagesSection } from "@/components/sections/LanguagesSection";
 import { PremiumCard } from "@/components/ui/PremiumCard";
 import { SideScrollIndicator } from "@/components/ui/SideScrollIndicator";
+import { ProjectTiltCard } from "@/components/ui/ProjectTiltCard";
+import { GlassPanel } from "@/components/ui/GlassPanel";
 import { getPortfolioContent, type ProjectItem } from "@/lib/pdf-content";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type FlowPortfolioContentProps = {
   reducedMotion: boolean;
@@ -20,6 +25,7 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
   const { language } = usePortfolio();
   const content = getPortfolioContent(language);
   const [caseStudyProject, setCaseStudyProject] = useState<ProjectItem | null>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
 
   const { featuredProject, regularProjects } = useMemo(() => {
     const featured = content.projects.find((project) => project.featured) ?? content.projects[0] ?? null;
@@ -40,10 +46,159 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
         transition: { duration: 0.45, ease: [0.2, 0.7, 0.2, 1] as [number, number, number, number] }
       };
 
+  // GSAP scroll animations
+  useEffect(() => {
+    if (reducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      // Skills section reveal
+      const skillsSection = document.querySelector('#skills');
+      if (skillsSection) {
+        gsap.fromTo(
+          skillsSection.querySelectorAll('.skill-chip-card'),
+          { opacity: 0, y: 30, scale: 0.9 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.5,
+            stagger: 0.05,
+            scrollTrigger: {
+              trigger: skillsSection,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Languages section reveal
+      const langSection = document.querySelector('#languages');
+      if (langSection) {
+        gsap.fromTo(
+          langSection,
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: 0.6,
+            scrollTrigger: {
+              trigger: langSection,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Experience cards reveal
+      const expSection = document.querySelector('#experience');
+      if (expSection) {
+        gsap.fromTo(
+          expSection.querySelectorAll('.experience-card'),
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: expSection,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Project cards reveal with tilt effect
+      const projectsSection = document.querySelector('#projects');
+      if (projectsSection) {
+        gsap.fromTo(
+          projectsSection.querySelectorAll('.project-tilt-wrapper'),
+          { opacity: 0, y: 50, scale: 0.95 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            stagger: 0.15,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: projectsSection,
+              start: "top 75%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Certifications reveal
+      const certSection = document.querySelector('#certifications');
+      if (certSection) {
+        gsap.fromTo(
+          certSection.querySelectorAll('.cert-card'),
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: certSection,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Contact section reveal
+      const contactSection = document.querySelector('#contact');
+      if (contactSection) {
+        gsap.fromTo(
+          contactSection,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            scrollTrigger: {
+              trigger: contactSection,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Chat section reveal
+      const chatSection = document.querySelector('#chat');
+      if (chatSection) {
+        gsap.fromTo(
+          chatSection,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            scrollTrigger: {
+              trigger: chatSection,
+              start: "top 90%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+    }, pageRef);
+
+    return () => ctx.revert();
+  }, [reducedMotion]);
+
   return (
-    <div className="flow-page">
+    <div ref={pageRef} className="flow-page">
       <SideScrollIndicator labels={content.sectionTitles} />
 
+      {/* Hero Section - Original PremiumCard style */}
       <section id="hero" data-section-id="hero" className="flow-hero-stage">
         <PremiumCard as="div" className="hero-premium-card" spotlight>
           <p className="hero-eyebrow">{content.name}</p>
@@ -80,23 +235,36 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
           <LanguagesSection title={content.sectionTitles.languages} languages={content.languages} />
         </motion.section>
 
+        {/* Experience Section */}
         <motion.section id="experience" data-section-id="experience" className="flow-section" {...motionProps}>
           <header className="section-head">
             <h2>{content.sectionTitles.experience}</h2>
           </header>
 
           <div className="experience-grid single-col">
-            {content.experience.map((item) => (
-              <PremiumCard key={`${item.org}-${item.period}`} className="experience-card">
+            {content.experience.map((item, index) => (
+              <PremiumCard 
+                key={`${item.org}-${item.period}`} 
+                className="experience-card"
+                sheen={true}
+              >
                 <p className="mini-kicker">{item.period}</p>
                 <h3>{item.org}</h3>
                 <p className="meta-line strong">{item.role}</p>
                 <p>{item.detail}</p>
+                {/* Animated border indicator */}
+                <div 
+                  className="exp-card-indicator" 
+                  style={{ 
+                    animationDelay: `${index * 0.1}s`
+                  }} 
+                />
               </PremiumCard>
             ))}
           </div>
         </motion.section>
 
+        {/* Projects Section with 3D Tilt Cards */}
         <motion.section id="projects" data-section-id="projects" className="flow-section" {...motionProps}>
           <header className="section-head">
             <h2>{content.sectionTitles.projects}</h2>
@@ -104,12 +272,30 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
 
           <div className="projects-showcase-stack">
             {featuredProject ? (
-              <AirbnbProjectCard project={featuredProject} copy={content.projectShowcase} onOpenCaseStudy={setCaseStudyProject} variant="featured" priority />
+              <div className="project-tilt-wrapper">
+                <ProjectTiltCard
+                  key={featuredProject.slug}
+                  title={featuredProject.title}
+                  description={featuredProject.description}
+                  tags={featuredProject.technologies || []}
+                  image={featuredProject.image || undefined}
+                  href={featuredProject.liveUrl || undefined}
+                  featured={true}
+                />
+              </div>
             ) : null}
 
             <div className="projects-showcase-grid">
               {regularProjects.map((project) => (
-                <AirbnbProjectCard key={project.slug} project={project} copy={content.projectShowcase} onOpenCaseStudy={setCaseStudyProject} variant="normal" />
+                <div key={project.slug} className="project-tilt-wrapper">
+                  <ProjectTiltCard
+                    title={project.title}
+                    description={project.description}
+                    tags={project.technologies || []}
+                    image={project.image || undefined}
+                    href={project.liveUrl || undefined}
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -161,7 +347,7 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
           </header>
 
           <div className="contact-grid single-col">
-            <PremiumCard className="contact-card">
+            <GlassPanel className="contact-card">
               <div className="contact-list">
                 {content.contacts.map((item) => (
                   <a key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer">
@@ -170,7 +356,7 @@ export function FlowPortfolioContent({ reducedMotion }: FlowPortfolioContentProp
                   </a>
                 ))}
               </div>
-            </PremiumCard>
+            </GlassPanel>
           </div>
         </motion.section>
 
