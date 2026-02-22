@@ -2372,3 +2372,278 @@ img {
 .rpg-tab-content-enter {
   animation: rpgFadeInUp 0.35s ease-out;
 }
+
+/* --- Custom RPG Scrollbar --- */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0e1a;
+  border-left: 1px solid rgba(139, 77, 27, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #8b4d1b, #cb7928, #8b4d1b);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 194, 75, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #cb7928, #ffc24b, #cb7928);
+  box-shadow: 0 0 6px rgba(255, 194, 75, 0.4);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #8b4d1b #0a0e1a;
+}
+
+/* --- Gradient Shimmer Title --- */
+
+@keyframes rpgTitleShimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.rpg-title-gradient {
+  background: linear-gradient(90deg,
+      #cb7928 0%,
+      #ffc24b 25%,
+      #ffe78a 50%,
+      #ffc24b 75%,
+      #cb7928 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: rpgTitleShimmer 4s linear infinite;
+  text-shadow: none;
+}
+
+/* --- RPG Footer --- */
+
+.rpg-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.rpg-footer-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(186, 106, 37, 0.5), rgba(255, 194, 75, 0.3), rgba(186, 106, 37, 0.5), transparent);
+  margin-bottom: 1rem;
+}
+
+.rpg-footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.rpg-footer-icon {
+  opacity: 0.5;
+}
+
+.rpg-footer-text {
+  font-family: var(--font-body), sans-serif;
+  font-size: 1.2rem;
+  color: #8899bb;
+  margin: 0;
+}
+
+.rpg-footer-text strong {
+  color: #ffc24b;
+}
+
+.rpg-footer-quest {
+  font-family: var(--font-heading), monospace;
+  font-size: 0.4rem;
+  letter-spacing: 0.12em;
+  color: rgba(157, 193, 255, 0.4);
+  margin: 0.5rem 0 0;
+  animation: rpgLevelPulse 4s ease-in-out infinite;
+}
+
+/* --- Skill Tooltip --- */
+
+.rpg-skill-card {
+  position: relative;
+}
+
+.rpg-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  z-index: 50;
+  white-space: nowrap;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid rgba(255, 194, 75, 0.35);
+  background: rgba(13, 26, 58, 0.95);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-body), sans-serif;
+  font-size: 1.1rem;
+  color: #ffe078;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateX(-50%) translateY(4px);
+}
+
+.rpg-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(255, 194, 75, 0.35);
+}
+
+.rpg-skill-card:hover .rpg-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* --- Loading Skeleton --- */
+
+@keyframes rpgSkeletonPulse {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.rpg-skeleton {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  background: #0a0e1a;
+}
+
+.rpg-skeleton-sword {
+  animation: rpgFloat 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(255, 194, 75, 0.4));
+}
+
+.rpg-skeleton-text {
+  font-family: var(--font-heading), monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: #ffc24b;
+  animation: rpgLevelPulse 2s ease-in-out infinite;
+}
+
+.rpg-skeleton-bar {
+  width: 180px;
+  height: 6px;
+  border: 1px solid rgba(255, 194, 75, 0.3);
+  background: #0d1a3a;
+  overflow: hidden;
+}
+
+.rpg-skeleton-bar-fill {
+  height: 100%;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, #ffc24b, transparent);
+  animation: rpgSkeletonSlide 1.5s ease-in-out infinite;
+}
+
+@keyframes rpgSkeletonSlide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+/* --- Audio Toggle Button --- */
+
+.rpg-audio-panel {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rpg-audio-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 194, 75, 0.25);
+  border-radius: 4px;
+  background: rgba(13, 26, 58, 0.85);
+  backdrop-filter: blur(8px);
+  color: #9dc1ff;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rpg-audio-btn:hover {
+  border-color: rgba(255, 194, 75, 0.5);
+  background: rgba(13, 26, 58, 0.95);
+  box-shadow: 0 0 8px rgba(255, 194, 75, 0.15);
+}
+
+.rpg-audio-btn--active {
+  border-color: rgba(255, 194, 75, 0.5);
+  color: #ffc24b;
+  box-shadow: 0 0 8px rgba(255, 194, 75, 0.2);
+}
+
+/* --- Typewriter cursor --- */
+
+.rpg-typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #ffc24b;
+  margin-left: 2px;
+  animation: rpgCursorBlink 0.8s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes rpgCursorBlink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+/* --- 3D Tilt Card --- */
+
+.rpg-tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease;
+}

@@ -1,12 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import RarityBadge, { type Rarity } from "@/components/rpg/RarityBadge";
 import { SwordIcon, ShieldIcon, ChartIcon, MapIcon, TrophyIcon, ChestIcon, ScrollIcon } from "@/components/rpg/RPGIcons";
 import SwordDivider from "@/components/rpg/SwordDivider";
+import RPGFooter from "@/components/rpg/RPGFooter";
+import { useTypewriter, useCounter } from "@/hooks/useRPGEffects";
+import { useRPGSound, useRPGMusic } from "@/hooks/useRPGAudio";
 
 const ParticleBackground = dynamic(() => import("@/components/rpg/ParticleBackground"), { ssr: false });
 
@@ -52,24 +55,25 @@ interface Skill {
   rarity: Rarity;
   color: string;
   icon: string;
+  xpNeeded: number;
 }
 
 const skills: Skill[] = [
-  { name: "React.js", level: 9, percent: 90, rarity: "LEGENDARY", color: "#61dafb", icon: "⚛️" },
-  { name: "Next.js", level: 8, percent: 82, rarity: "EPIC", color: "#a855f7", icon: "🔺" },
-  { name: "JavaScript", level: 9, percent: 92, rarity: "LEGENDARY", color: "#f7df1e", icon: "⚡" },
-  { name: "TypeScript", level: 8, percent: 80, rarity: "EPIC", color: "#3178c6", icon: "🔷" },
-  { name: "C#", level: 8, percent: 82, rarity: "EPIC", color: "#9b4dca", icon: "🎯" },
-  { name: "ASP.NET Core", level: 8, percent: 80, rarity: "EPIC", color: "#512bd4", icon: "🏗️" },
-  { name: "Python", level: 7, percent: 70, rarity: "RARE", color: "#3572a5", icon: "🐍" },
-  { name: "HTML/CSS", level: 9, percent: 93, rarity: "LEGENDARY", color: "#e44d26", icon: "🎨" },
-  { name: "SQL Server", level: 7, percent: 72, rarity: "RARE", color: "#cc2927", icon: "🗄️" },
-  { name: "MongoDB", level: 6, percent: 62, rarity: "RARE", color: "#47a248", icon: "🍃" },
-  { name: "Docker", level: 6, percent: 60, rarity: "RARE", color: "#2496ed", icon: "📦" },
-  { name: "Git", level: 9, percent: 90, rarity: "LEGENDARY", color: "#f05032", icon: "🔀" },
-  { name: "Tailwind", level: 8, percent: 84, rarity: "EPIC", color: "#06b6d4", icon: "🌊" },
-  { name: "Bootstrap", level: 7, percent: 75, rarity: "RARE", color: "#7952b3", icon: "🅱️" },
-  { name: "REST APIs", level: 8, percent: 85, rarity: "EPIC", color: "#22c55e", icon: "🔌" },
+  { name: "React.js", level: 9, percent: 90, rarity: "LEGENDARY", color: "#61dafb", icon: "⚛️", xpNeeded: 1200 },
+  { name: "Next.js", level: 8, percent: 82, rarity: "EPIC", color: "#a855f7", icon: "🔺", xpNeeded: 2800 },
+  { name: "JavaScript", level: 9, percent: 92, rarity: "LEGENDARY", color: "#f7df1e", icon: "⚡", xpNeeded: 900 },
+  { name: "TypeScript", level: 8, percent: 80, rarity: "EPIC", color: "#3178c6", icon: "🔷", xpNeeded: 3100 },
+  { name: "C#", level: 8, percent: 82, rarity: "EPIC", color: "#9b4dca", icon: "🎯", xpNeeded: 2700 },
+  { name: "ASP.NET Core", level: 8, percent: 80, rarity: "EPIC", color: "#512bd4", icon: "🏗️", xpNeeded: 3200 },
+  { name: "Python", level: 7, percent: 70, rarity: "RARE", color: "#3572a5", icon: "🐍", xpNeeded: 4500 },
+  { name: "HTML/CSS", level: 9, percent: 93, rarity: "LEGENDARY", color: "#e44d26", icon: "🎨", xpNeeded: 800 },
+  { name: "SQL Server", level: 7, percent: 72, rarity: "RARE", color: "#cc2927", icon: "🗄️", xpNeeded: 4200 },
+  { name: "MongoDB", level: 6, percent: 62, rarity: "RARE", color: "#47a248", icon: "🍃", xpNeeded: 5800 },
+  { name: "Docker", level: 6, percent: 60, rarity: "RARE", color: "#2496ed", icon: "📦", xpNeeded: 6000 },
+  { name: "Git", level: 9, percent: 90, rarity: "LEGENDARY", color: "#f05032", icon: "🔀", xpNeeded: 1100 },
+  { name: "Tailwind", level: 8, percent: 84, rarity: "EPIC", color: "#06b6d4", icon: "🌊", xpNeeded: 2400 },
+  { name: "Bootstrap", level: 7, percent: 75, rarity: "RARE", color: "#7952b3", icon: "🅱️", xpNeeded: 3800 },
+  { name: "REST APIs", level: 8, percent: 85, rarity: "EPIC", color: "#22c55e", icon: "🔌", xpNeeded: 2200 },
 ];
 
 interface Quest {
@@ -89,9 +93,7 @@ const quests: Quest[] = [
     role: "Full-Stack Developer Intern",
     period: "Oct 2024 — Present",
     desc: "Building enterprise-grade applications with ASP.NET Core, React, and SQL Server.",
-    xp: 8500,
-    maxXp: 10000,
-    status: "active",
+    xp: 8500, maxXp: 10000, status: "active",
     milestones: ["React Mastery", "API Design", "Database Modeling"],
   },
   {
@@ -99,9 +101,7 @@ const quests: Quest[] = [
     role: "Full-Stack Developer",
     period: "2024 — Present",
     desc: "Delivering custom web solutions for clients, from landing pages to full SaaS platforms.",
-    xp: 6200,
-    maxXp: 10000,
-    status: "active",
+    xp: 6200, maxXp: 10000, status: "active",
     milestones: ["Client Management", "E2E Delivery", "CI/CD Pipelines"],
   },
   {
@@ -109,9 +109,7 @@ const quests: Quest[] = [
     role: "Full-Stack Developer",
     period: "2024",
     desc: "Complete student management system with authentication, reporting and clean UX.",
-    xp: 10000,
-    maxXp: 10000,
-    status: "complete",
+    xp: 10000, maxXp: 10000, status: "complete",
     milestones: ["Auth System", "Reporting Dashboard", "UX Design"],
   },
   {
@@ -119,123 +117,69 @@ const quests: Quest[] = [
     role: "Backend Developer",
     period: "2024",
     desc: "Asset assignment, inventory tracking, and library automation systems.",
-    xp: 10000,
-    maxXp: 10000,
-    status: "complete",
+    xp: 10000, maxXp: 10000, status: "complete",
     milestones: ["Asset Tracking", "Automation", "Inventory Logic"],
   },
 ];
 
 interface Achievement {
-  icon: string;
-  title: string;
-  place: string;
-  period: string;
-  desc: string;
-  skills: string[];
-  stars: number;
+  icon: string; title: string; place: string; period: string;
+  desc: string; skills: string[]; stars: number;
 }
 
 const achievements: Achievement[] = [
   {
-    icon: "🎓",
-    title: "BilgeAdam Boost",
-    place: "Full-Stack Development Program",
+    icon: "🎓", title: "BilgeAdam Boost", place: "Full-Stack Development Program",
     period: "Sep 2024 — Jul 2025",
     desc: "Intensive full-stack bootcamp covering React, ASP.NET Core, Docker, and cloud deployment.",
-    skills: ["React", "ASP.NET Core", "SQL", "Docker", "CI/CD"],
-    stars: 5,
+    skills: ["React", "ASP.NET Core", "SQL", "Docker", "CI/CD"], stars: 5,
   },
   {
-    icon: "🎓",
-    title: "Anadolu University",
-    place: "Web Design and Coding",
+    icon: "🎓", title: "Anadolu University", place: "Web Design and Coding",
     period: "GPA: 3.00",
     desc: "Associate degree in web design emphasizing frontend technologies and responsive design.",
-    skills: ["HTML5", "CSS3", "JavaScript", "Responsive Design"],
-    stars: 4,
+    skills: ["HTML5", "CSS3", "JavaScript", "Responsive Design"], stars: 4,
   },
   {
-    icon: "🎓",
-    title: "Dokuz Eylul University",
-    place: "Electrical Technology",
+    icon: "🎓", title: "Dokuz Eylul University", place: "Electrical Technology",
     period: "GPA: 3.11",
     desc: "Foundation in engineering thinking, systems analysis, and technical problem-solving.",
-    skills: ["Systems Analysis", "Problem Solving", "Technical Foundation"],
-    stars: 4,
+    skills: ["Systems Analysis", "Problem Solving", "Technical Foundation"], stars: 4,
   },
 ];
 
-const certifications = [
-  "Git/GitHub/GitLab",
-  "Jira",
-  "Web Scraping",
-  "Python Programming",
-  "Agile/Scrum",
-];
+const certifications = ["Git/GitHub/GitLab", "Jira", "Web Scraping", "Python Programming", "Agile/Scrum"];
 
 interface Project {
-  icon: string;
-  title: string;
-  rarity: Rarity;
-  desc: string;
-  power: number;
-  complexity: number;
-  impact: number;
-  stack: string[];
-  url?: string;
+  icon: string; title: string; rarity: Rarity; desc: string;
+  power: number; complexity: number; impact: number; stack: string[]; url?: string;
 }
 
 const projects: Project[] = [
   {
-    icon: "🏢",
-    title: "Advance Management System",
-    rarity: "EPIC",
-    desc: "Enterprise approval workflows, notifications, and reporting dashboard for advance management.",
-    power: 85,
-    complexity: 80,
-    impact: 88,
-    stack: ["ASP.NET Core", "React", "SQL Server", "Identity"],
+    icon: "🏢", title: "Advance Management System", rarity: "EPIC",
+    desc: "Enterprise approval workflows, notifications, and reporting dashboard.",
+    power: 85, complexity: 80, impact: 88, stack: ["ASP.NET Core", "React", "SQL Server", "Identity"]
   },
   {
-    icon: "🍽️",
-    title: "AllerCheck",
-    rarity: "LEGENDARY",
-    desc: "Food allergy-safe consumption platform helping users identify allergens and safe alternatives.",
-    power: 90,
-    complexity: 75,
-    impact: 92,
-    stack: ["React", "Node.js", "MongoDB", "REST API"],
+    icon: "🍽️", title: "AllerCheck", rarity: "LEGENDARY",
+    desc: "Food allergy-safe consumption platform helping users identify allergens.",
+    power: 90, complexity: 75, impact: 92, stack: ["React", "Node.js", "MongoDB", "REST API"]
   },
   {
-    icon: "📈",
-    title: "Stock Trading Bot",
-    rarity: "EPIC",
-    desc: "Automated trading bot with real-time market analysis and React frontend dashboard.",
-    power: 82,
-    complexity: 90,
-    impact: 78,
-    stack: ["C#", "React", "WebSocket", "Market APIs"],
+    icon: "📈", title: "Stock Trading Bot", rarity: "EPIC",
+    desc: "Automated trading bot with real-time market analysis and React dashboard.",
+    power: 82, complexity: 90, impact: 78, stack: ["C#", "React", "WebSocket", "Market APIs"]
   },
   {
-    icon: "🤖",
-    title: "AI Note-Taking App",
-    rarity: "RARE",
-    desc: "AI-powered note-taking application with smart categorization and search.",
-    power: 70,
-    complexity: 68,
-    impact: 72,
-    stack: ["Python", "React", "AI/ML", "REST API"],
+    icon: "🤖", title: "AI Note-Taking App", rarity: "RARE",
+    desc: "AI-powered note-taking with smart categorization and search.",
+    power: 70, complexity: 68, impact: 72, stack: ["Python", "React", "AI/ML", "REST API"]
   },
   {
-    icon: "🍳",
-    title: "Recipe Suggestion App",
-    rarity: "RARE",
-    desc: "Ingredient-based recipe suggestion app with AI-powered recommendations.",
-    power: 68,
-    complexity: 60,
-    impact: 75,
-    stack: ["React", "Python", "OpenAI API", "Mobile"],
+    icon: "🍳", title: "Recipe Suggestion App", rarity: "RARE",
+    desc: "Ingredient-based recipe suggestion with AI-powered recommendations.",
+    power: 68, complexity: 60, impact: 75, stack: ["React", "Python", "OpenAI API", "Mobile"]
   },
 ];
 
@@ -264,7 +208,7 @@ const staggerItem = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" as const } },
 };
 
-/* ─── Rarity CSS helper ─── */
+/* ─── Helpers ─── */
 
 function rarityClass(r: Rarity) {
   if (r === "LEGENDARY") return "rpg-skill-card--legendary";
@@ -273,34 +217,123 @@ function rarityClass(r: Rarity) {
   return "";
 }
 
-/* ─── Component ─── */
+/* ─── Counter Sub-Component ─── */
+function AnimatedValue({ target }: { target: number }) {
+  const val = useCounter(target, 1200);
+  return <>{val}</>;
+}
+
+/* ─── 3D Tilt Hook ─── */
+function useTilt() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.transform = `perspective(600px) rotateX(${-y * 8}deg) rotateY(${x * 8}deg)`;
+  }, []);
+
+  const handleLeave = useCallback(() => {
+    if (ref.current) ref.current.style.transform = "";
+  }, []);
+
+  return { ref, handleMove, handleLeave };
+}
+
+/* ─── TiltCard Wrapper ─── */
+function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  const { ref, handleMove, handleLeave } = useTilt();
+  return (
+    <div ref={ref} onMouseMove={handleMove} onMouseLeave={handleLeave} className={`rpg-tilt-card ${className ?? ""}`}>
+      {children}
+    </div>
+  );
+}
+
+/* ─── Loading Screen ─── */
+function LoadingScreen() {
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(false), 1800);
+    return () => clearTimeout(t);
+  }, []);
+  if (!visible) return null;
+  return (
+    <motion.div className="rpg-skeleton" initial={{ opacity: 1 }} animate={{ opacity: 0 }} transition={{ delay: 1.4, duration: 0.4 }}>
+      <div className="rpg-skeleton-sword"><SwordIcon size={48} /></div>
+      <p className="rpg-skeleton-text">LOADING CHARACTER SHEET...</p>
+      <div className="rpg-skeleton-bar"><div className="rpg-skeleton-bar-fill" /></div>
+    </motion.div>
+  );
+}
+
+/* ─── Main Component ─── */
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<SheetTab>("Character");
   const [avatarMissing, setAvatarMissing] = useState(false);
+  const [soundOn, setSoundOn] = useState(false);
+  const [musicOn, setMusicOn] = useState(false);
+
+  const { playClick, playOpen } = useRPGSound(soundOn);
+  const { start: startMusic, stop: stopMusic } = useRPGMusic(musicOn);
+
+  // Typewriter for bio
+  const { display: bioText, done: bioDone } = useTypewriter(characterBio.bio, 18, activeTab === "Character");
+
+  // Music toggle
+  useEffect(() => { musicOn ? startMusic() : stopMusic(); }, [musicOn, startMusic, stopMusic]);
+
+  const switchTab = (key: SheetTab) => {
+    setActiveTab(key);
+    playClick();
+  };
 
   return (
     <>
+      <LoadingScreen />
       <ParticleBackground />
+
+      {/* Audio Controls */}
+      <div className="rpg-audio-panel">
+        <button
+          type="button"
+          className={`rpg-audio-btn ${soundOn ? "rpg-audio-btn--active" : ""}`}
+          onClick={() => { setSoundOn((v) => !v); }}
+          title={soundOn ? "Sound FX: ON" : "Sound FX: OFF"}
+        >
+          {soundOn ? "🔊" : "🔇"}
+        </button>
+        <button
+          type="button"
+          className={`rpg-audio-btn ${musicOn ? "rpg-audio-btn--active" : ""}`}
+          onClick={() => setMusicOn((v) => !v)}
+          title={musicOn ? "Music: ON" : "Music: OFF"}
+        >
+          {musicOn ? "🎵" : "🎶"}
+        </button>
+      </div>
 
       <main className="rpg-main">
         <motion.div
           className="rpg-sheet"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          transition={{ duration: 0.6, ease: "easeOut" as const, delay: 1.6 }}
         >
           {/* ── Header ── */}
           <header>
             <h1 className="rpg-title">
               <span className="rpg-title-sword"><SwordIcon size={24} /></span>{" "}
-              Character Sheet{" "}
+              <span className="rpg-title-gradient">Character Sheet</span>{" "}
               <span className="rpg-title-sword"><SwordIcon size={24} /></span>
             </h1>
 
             <SwordDivider />
 
-            {/* Tab Navigation */}
             <nav className="rpg-tabs" role="tablist" aria-label="Character tabs">
               {tabs.map(({ key, icon, label }) => (
                 <motion.button
@@ -308,7 +341,7 @@ export default function Home() {
                   type="button"
                   role="tab"
                   aria-selected={activeTab === key}
-                  onClick={() => setActiveTab(key)}
+                  onClick={() => switchTab(key)}
                   className={`rpg-tab ${activeTab === key ? "rpg-tab--active" : ""}`}
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
@@ -322,14 +355,13 @@ export default function Home() {
 
           {/* ── Body ── */}
           <section className="rpg-avatar-section">
-            {/* Left Column: Avatar + Progress */}
+            {/* Left: Avatar + Progress */}
             <motion.aside
               className="rpg-avatar-card"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.5, delay: 1.8, ease: "easeOut" as const }}
             >
-              {/* Avatar Frame */}
               <div className="rpg-avatar-frame">
                 <div className="rpg-avatar-inner">
                   <span className="rpg-level-badge">LVL 25</span>
@@ -351,55 +383,46 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Name */}
               <div>
                 <h2 className="rpg-avatar-name">ALI EREN TUMER</h2>
                 <p className="rpg-avatar-title">Full Stack Developer</p>
               </div>
 
-              {/* Progress Bars */}
               <div className="rpg-progress-panel">
                 {progressBars.map((skill, i) => (
                   <motion.div
                     key={skill.name}
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 + i * 0.08, duration: 0.4 }}
+                    transition={{ delay: 2.0 + i * 0.08, duration: 0.4 }}
                   >
                     <div className="rpg-progress-row">
                       <span className="rpg-progress-label">
                         <span>{skill.icon}</span> {skill.name}
                       </span>
-                      <span className="rpg-progress-value">{skill.score}/100</span>
+                      <span className="rpg-progress-value"><AnimatedValue target={skill.score} />/100</span>
                     </div>
                     <div className="rpg-progress-track">
-                      <div
-                        className="rpg-progress-fill"
-                        style={{ width: `${skill.score}%`, backgroundColor: skill.color }}
-                      />
+                      <div className="rpg-progress-fill" style={{ width: `${skill.score}%`, backgroundColor: skill.color }} />
                     </div>
                   </motion.div>
                 ))}
               </div>
             </motion.aside>
 
-            {/* Right Column: Tab Content */}
+            {/* Right: Tab Content */}
             <div className="rpg-content-panel" style={{ overflow: "hidden" }}>
               <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  variants={tabContentVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                >
-                  {/* ═══ CHARACTER TAB ═══ */}
+                <motion.div key={activeTab} variants={tabContentVariants} initial="hidden" animate="visible" exit="exit">
+
+                  {/* ═══ CHARACTER ═══ */}
                   {activeTab === "Character" && (
                     <>
                       <h3 className="rpg-content-title"><ShieldIcon size={16} /> Character Bio</h3>
                       <hr className="rpg-content-divider" />
                       <p className="font-[family-name:var(--font-body)] text-[1.5rem] leading-[1.15] text-[#d4e6ff]">
-                        {characterBio.bio}
+                        {bioText}
+                        {!bioDone && <span className="rpg-typewriter-cursor" />}
                       </p>
 
                       <SwordDivider />
@@ -435,38 +458,37 @@ export default function Home() {
                     </>
                   )}
 
-                  {/* ═══ STATS TAB ═══ */}
+                  {/* ═══ STATS ═══ */}
                   {activeTab === "Stats" && (
                     <>
                       <h3 className="rpg-content-title"><ChartIcon size={16} /> Tech Skills</h3>
                       <hr className="rpg-content-divider" />
                       <motion.div className="rpg-skill-grid" variants={staggerContainer} initial="hidden" animate="visible">
                         {skills.map((s) => (
-                          <motion.div key={s.name} variants={staggerItem} className={`rpg-skill-card ${rarityClass(s.rarity)}`}>
-                            <div className="flex items-start justify-between gap-1">
-                              <span className="rpg-skill-name">{s.icon} {s.name}</span>
-                              <RarityBadge rarity={s.rarity} />
-                            </div>
-                            <p className="rpg-skill-level">Lvl {s.level}</p>
-                            <div className="rpg-skill-bar-track">
-                              <div
-                                className="rpg-skill-bar-fill"
-                                style={{ width: `${s.percent}%`, backgroundColor: s.color }}
-                              />
-                            </div>
+                          <motion.div key={s.name} variants={staggerItem}>
+                            <TiltCard className={`rpg-skill-card ${rarityClass(s.rarity)}`}>
+                              <span className="rpg-tooltip">⚡ {s.xpNeeded.toLocaleString()} XP to next level</span>
+                              <div className="flex items-start justify-between gap-1">
+                                <span className="rpg-skill-name">{s.icon} {s.name}</span>
+                                <RarityBadge rarity={s.rarity} />
+                              </div>
+                              <p className="rpg-skill-level">Lvl {s.level}</p>
+                              <div className="rpg-skill-bar-track">
+                                <div className="rpg-skill-bar-fill" style={{ width: `${s.percent}%`, backgroundColor: s.color }} />
+                              </div>
+                            </TiltCard>
                           </motion.div>
                         ))}
                       </motion.div>
                     </>
                   )}
 
-                  {/* ═══ QUESTS TAB ═══ */}
+                  {/* ═══ QUESTS ═══ */}
                   {activeTab === "Quests" && (
                     <>
                       <h3 className="rpg-content-title"><MapIcon size={16} /> Quest Board</h3>
                       <hr className="rpg-content-divider" />
 
-                      {/* Active Quests */}
                       <h4 className="font-[family-name:var(--font-heading)] text-[0.5rem] text-[#22c55e] tracking-widest mt-2">
                         ⚡ ACTIVE QUESTS
                       </h4>
@@ -480,18 +502,13 @@ export default function Home() {
                             <p className="rpg-quest-desc">{q.role} • {q.period}</p>
                             <p className="rpg-quest-desc mt-1">{q.desc}</p>
                             <div className="rpg-quest-xp">
-                              <span className="rpg-quest-xp-label">XP: {q.xp.toLocaleString()}/{q.maxXp.toLocaleString()}</span>
+                              <span className="rpg-quest-xp-label">XP: <AnimatedValue target={q.xp} />/{q.maxXp.toLocaleString()}</span>
                               <div className="rpg-stat-track" style={{ flex: 1 }}>
-                                <div
-                                  className="rpg-stat-fill"
-                                  style={{ width: `${(q.xp / q.maxXp) * 100}%`, backgroundColor: "#22c55e" }}
-                                />
+                                <div className="rpg-stat-fill" style={{ width: `${(q.xp / q.maxXp) * 100}%`, backgroundColor: "#22c55e" }} />
                               </div>
                             </div>
                             <div className="rpg-skill-tags mt-2">
-                              {q.milestones.map((m) => (
-                                <span key={m} className="rpg-skill-tag">✅ {m}</span>
-                              ))}
+                              {q.milestones.map((m) => (<span key={m} className="rpg-skill-tag">✅ {m}</span>))}
                             </div>
                           </motion.div>
                         ))}
@@ -499,7 +516,6 @@ export default function Home() {
 
                       <SwordDivider />
 
-                      {/* Completed Quests */}
                       <h4 className="font-[family-name:var(--font-heading)] text-[0.5rem] text-[#7ba4ff] tracking-widest">
                         ✅ COMPLETED QUESTS
                       </h4>
@@ -515,10 +531,7 @@ export default function Home() {
                             <div className="rpg-quest-xp">
                               <span className="rpg-quest-xp-label">XP: MAX</span>
                               <div className="rpg-stat-track" style={{ flex: 1 }}>
-                                <div
-                                  className="rpg-stat-fill"
-                                  style={{ width: "100%", backgroundColor: "#7ba4ff" }}
-                                />
+                                <div className="rpg-stat-fill" style={{ width: "100%", backgroundColor: "#7ba4ff" }} />
                               </div>
                             </div>
                           </motion.div>
@@ -527,35 +540,31 @@ export default function Home() {
                     </>
                   )}
 
-                  {/* ═══ ACHIEVEMENTS TAB ═══ */}
+                  {/* ═══ ACHIEVEMENTS ═══ */}
                   {activeTab === "Achievements" && (
                     <>
                       <h3 className="rpg-content-title"><TrophyIcon size={16} /> Achievement Wall</h3>
                       <hr className="rpg-content-divider" />
-
                       <motion.div className="rpg-achievement-grid" variants={staggerContainer} initial="hidden" animate="visible">
                         {achievements.map((a) => (
-                          <motion.div key={a.title} variants={staggerItem} className="rpg-achievement-card">
-                            <div className="rpg-achievement-icon">{a.icon}</div>
-                            <h4 className="rpg-achievement-title">{a.title}</h4>
-                            <p className="rpg-achievement-subtitle">{a.place}</p>
-                            <p className="rpg-achievement-subtitle" style={{ color: "#ffe078" }}>{a.period}</p>
-                            <p className="rpg-achievement-desc mt-2">{a.desc}</p>
-                            <div className="rpg-skill-tags">
-                              {a.skills.map((s) => (
-                                <span key={s} className="rpg-skill-tag">{s}</span>
-                              ))}
-                            </div>
-                            <div className="rpg-stars">
-                              {"⭐".repeat(a.stars)}{"☆".repeat(5 - a.stars)}
-                            </div>
+                          <motion.div key={a.title} variants={staggerItem}>
+                            <TiltCard className="rpg-achievement-card">
+                              <div className="rpg-achievement-icon">{a.icon}</div>
+                              <h4 className="rpg-achievement-title">{a.title}</h4>
+                              <p className="rpg-achievement-subtitle">{a.place}</p>
+                              <p className="rpg-achievement-subtitle" style={{ color: "#ffe078" }}>{a.period}</p>
+                              <p className="rpg-achievement-desc mt-2">{a.desc}</p>
+                              <div className="rpg-skill-tags">
+                                {a.skills.map((s) => (<span key={s} className="rpg-skill-tag">{s}</span>))}
+                              </div>
+                              <div className="rpg-stars">{"⭐".repeat(a.stars)}{"☆".repeat(5 - a.stars)}</div>
+                            </TiltCard>
                           </motion.div>
                         ))}
                       </motion.div>
 
                       <SwordDivider />
 
-                      {/* Certifications */}
                       <h4 className="font-[family-name:var(--font-heading)] text-[0.55rem] text-[#ffd36d] tracking-widest">
                         📜 CERTIFICATIONS
                       </h4>
@@ -567,60 +576,49 @@ export default function Home() {
                     </>
                   )}
 
-                  {/* ═══ INVENTORY TAB ═══ */}
+                  {/* ═══ INVENTORY ═══ */}
                   {activeTab === "Inventory" && (
                     <>
                       <h3 className="rpg-content-title"><ChestIcon size={16} /> Project Inventory</h3>
                       <hr className="rpg-content-divider" />
-
                       <motion.div className="rpg-inventory-grid" variants={staggerContainer} initial="hidden" animate="visible">
                         {projects.map((p) => (
-                          <motion.div key={p.title} variants={staggerItem} className="rpg-inventory-card">
-                            <div className="rpg-inventory-header">
-                              <span className="rpg-inventory-title">{p.icon} {p.title}</span>
-                              <RarityBadge rarity={p.rarity} />
-                            </div>
-                            <p className="rpg-inventory-desc">{p.desc}</p>
-
-                            {/* Stat Bars */}
-                            <div className="rpg-stat-bars">
-                              {[
-                                { name: "Power", value: p.power, color: "#ef4444" },
-                                { name: "Complexity", value: p.complexity, color: "#facc15" },
-                                { name: "Impact", value: p.impact, color: "#22c55e" },
-                              ].map((stat) => (
-                                <div key={stat.name} className="rpg-stat-row">
-                                  <span className="rpg-stat-name">{stat.name}</span>
-                                  <div className="rpg-stat-track">
-                                    <div
-                                      className="rpg-stat-fill"
-                                      style={{ width: `${stat.value}%`, backgroundColor: stat.color }}
-                                    />
+                          <motion.div key={p.title} variants={staggerItem}>
+                            <TiltCard className="rpg-inventory-card">
+                              <div className="rpg-inventory-header">
+                                <span className="rpg-inventory-title">{p.icon} {p.title}</span>
+                                <RarityBadge rarity={p.rarity} />
+                              </div>
+                              <p className="rpg-inventory-desc">{p.desc}</p>
+                              <div className="rpg-stat-bars">
+                                {[
+                                  { name: "Power", value: p.power, color: "#ef4444" },
+                                  { name: "Complexity", value: p.complexity, color: "#facc15" },
+                                  { name: "Impact", value: p.impact, color: "#22c55e" },
+                                ].map((stat) => (
+                                  <div key={stat.name} className="rpg-stat-row">
+                                    <span className="rpg-stat-name">{stat.name}</span>
+                                    <div className="rpg-stat-track">
+                                      <div className="rpg-stat-fill" style={{ width: `${stat.value}%`, backgroundColor: stat.color }} />
+                                    </div>
+                                    <span className="rpg-stat-value"><AnimatedValue target={stat.value} /></span>
                                   </div>
-                                  <span className="rpg-stat-value">{stat.value}</span>
-                                </div>
-                              ))}
-                            </div>
-
-                            {/* Tech Stack Tags */}
-                            <div className="rpg-skill-tags">
-                              {p.stack.map((t) => (
-                                <span key={t} className="rpg-skill-tag">{t}</span>
-                              ))}
-                            </div>
-
-                            {p.url && (
-                              <a href={p.url} target="_blank" rel="noopener noreferrer" className="rpg-inventory-link">
-                                🔗 Visit Project
-                              </a>
-                            )}
+                                ))}
+                              </div>
+                              <div className="rpg-skill-tags">
+                                {p.stack.map((t) => (<span key={t} className="rpg-skill-tag">{t}</span>))}
+                              </div>
+                              {p.url && (
+                                <a href={p.url} target="_blank" rel="noopener noreferrer" className="rpg-inventory-link">🔗 Visit</a>
+                              )}
+                            </TiltCard>
                           </motion.div>
                         ))}
                       </motion.div>
                     </>
                   )}
 
-                  {/* ═══ CONTACT TAB ═══ */}
+                  {/* ═══ CONTACT ═══ */}
                   {activeTab === "Contact" && (
                     <>
                       <h3 className="rpg-content-title"><ScrollIcon size={16} /> Guild Contact</h3>
@@ -628,17 +626,13 @@ export default function Home() {
                       <p className="font-[family-name:var(--font-body)] text-[1.4rem] leading-[1.15] text-[#b9d3ff] mb-4">
                         Open to freelance and team opportunities in modern full-stack product development.
                       </p>
-
                       <motion.div className="rpg-contact-grid" variants={staggerContainer} initial="hidden" animate="visible">
                         {contacts.map((c) => (
                           <motion.a
-                            key={c.label}
-                            href={c.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="rpg-contact-card"
-                            variants={staggerItem}
+                            key={c.label} href={c.href} target="_blank" rel="noopener noreferrer"
+                            className="rpg-contact-card" variants={staggerItem}
                             whileHover={{ scale: 1.02, y: -2 }}
+                            onClick={() => playOpen()}
                           >
                             <span className="rpg-contact-icon">{c.icon}</span>
                             <div>
@@ -650,10 +644,13 @@ export default function Home() {
                       </motion.div>
                     </>
                   )}
+
                 </motion.div>
               </AnimatePresence>
             </div>
           </section>
+
+          <RPGFooter />
         </motion.div>
       </main>
     </>
