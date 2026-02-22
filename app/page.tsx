@@ -285,7 +285,7 @@ export default function Home() {
   const { display: bioText, done: bioDone } = useTypewriter(characterBio.bio, 18, activeTab === "Character");
 
   // Music toggle
-  useEffect(() => { musicOn ? startMusic() : stopMusic(); }, [musicOn, startMusic, stopMusic]);
+  useEffect(() => { if (musicOn) { startMusic(); } else { stopMusic(); } }, [musicOn, startMusic, stopMusic]);
 
   const switchTab = (key: SheetTab) => {
     setActiveTab(key);
