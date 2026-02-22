@@ -332,7 +332,7 @@ export default function Home() {
               {/* Avatar Frame */}
               <div className="rpg-avatar-frame">
                 <div className="rpg-avatar-inner">
-                  <span className="rpg-level-badge">LVL 29</span>
+                  <span className="rpg-level-badge">LVL 25</span>
                   {avatarMissing ? (
                     <div className="flex h-full items-center justify-center bg-[#162f67] text-center font-[family-name:var(--font-heading)] text-xs text-[#9dc1ff]">
                       PIXEL AVATAR
