@@ -3,7 +3,10 @@
 import Image from "next/image";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { motion, AnimatePresence } from "framer-motion";
 import RarityBadge, { type Rarity } from "@/components/rpg/RarityBadge";
+import { SwordIcon, ShieldIcon, ChartIcon, MapIcon, TrophyIcon, ChestIcon, ScrollIcon } from "@/components/rpg/RPGIcons";
+import SwordDivider from "@/components/rpg/SwordDivider";
 
 const ParticleBackground = dynamic(() => import("@/components/rpg/ParticleBackground"), { ssr: false });
 
@@ -11,15 +14,13 @@ const ParticleBackground = dynamic(() => import("@/components/rpg/ParticleBackgr
 
 type SheetTab = "Character" | "Stats" | "Quests" | "Achievements" | "Inventory" | "Contact";
 
-
-
-const tabs: { key: SheetTab; icon: string }[] = [
-  { key: "Character", icon: "⚔️" },
-  { key: "Stats", icon: "📊" },
-  { key: "Quests", icon: "🗺️" },
-  { key: "Achievements", icon: "🏆" },
-  { key: "Inventory", icon: "🎒" },
-  { key: "Contact", icon: "📧" },
+const tabs: { key: SheetTab; icon: React.ReactNode; label: string }[] = [
+  { key: "Character", icon: <ShieldIcon size={16} />, label: "Character" },
+  { key: "Stats", icon: <ChartIcon size={16} />, label: "Stats" },
+  { key: "Quests", icon: <MapIcon size={16} />, label: "Quests" },
+  { key: "Achievements", icon: <TrophyIcon size={16} />, label: "Achievements" },
+  { key: "Inventory", icon: <ChestIcon size={16} />, label: "Inventory" },
+  { key: "Contact", icon: <ScrollIcon size={16} />, label: "Contact" },
 ];
 
 /* ─── Data ─── */
@@ -246,6 +247,23 @@ const contacts = [
   { icon: "💼", label: "LINKEDIN", value: "linkedin.com/in/alitumer", href: "https://linkedin.com/in/alitumer" },
 ];
 
+/* ─── Animation Variants ─── */
+
+const tabContentVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+  exit: { opacity: 0, y: -10, transition: { duration: 0.2, ease: "easeIn" } },
+};
+
+const staggerContainer = {
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+
+const staggerItem = {
+  hidden: { opacity: 0, y: 14 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+};
+
 /* ─── Rarity CSS helper ─── */
 
 function rarityClass(r: Rarity) {
@@ -266,31 +284,38 @@ export default function Home() {
       <ParticleBackground />
 
       <main className="rpg-main">
-        <div className="rpg-sheet">
+        <motion.div
+          className="rpg-sheet"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
           {/* ── Header ── */}
           <header>
             <h1 className="rpg-title">
-              <span className="rpg-title-sword">⚔️</span>{" "}
+              <span className="rpg-title-sword"><SwordIcon size={24} /></span>{" "}
               Character Sheet{" "}
-              <span className="rpg-title-sword">⚔️</span>
+              <span className="rpg-title-sword"><SwordIcon size={24} /></span>
             </h1>
 
-            <hr className="rpg-divider" />
+            <SwordDivider />
 
             {/* Tab Navigation */}
             <nav className="rpg-tabs" role="tablist" aria-label="Character tabs">
-              {tabs.map(({ key, icon }) => (
-                <button
+              {tabs.map(({ key, icon, label }) => (
+                <motion.button
                   key={key}
                   type="button"
                   role="tab"
                   aria-selected={activeTab === key}
                   onClick={() => setActiveTab(key)}
                   className={`rpg-tab ${activeTab === key ? "rpg-tab--active" : ""}`}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
                 >
                   <span className="rpg-tab-icon">{icon}</span>
-                  {key}
-                </button>
+                  {label}
+                </motion.button>
               ))}
             </nav>
           </header>
@@ -298,7 +323,12 @@ export default function Home() {
           {/* ── Body ── */}
           <section className="rpg-avatar-section">
             {/* Left Column: Avatar + Progress */}
-            <aside className="rpg-avatar-card">
+            <motion.aside
+              className="rpg-avatar-card"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               {/* Avatar Frame */}
               <div className="rpg-avatar-frame">
                 <div className="rpg-avatar-inner">
@@ -329,8 +359,13 @@ export default function Home() {
 
               {/* Progress Bars */}
               <div className="rpg-progress-panel">
-                {progressBars.map((skill) => (
-                  <div key={skill.name}>
+                {progressBars.map((skill, i) => (
+                  <motion.div
+                    key={skill.name}
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + i * 0.08, duration: 0.4 }}
+                  >
                     <div className="rpg-progress-row">
                       <span className="rpg-progress-label">
                         <span>{skill.icon}</span> {skill.name}
@@ -343,261 +378,283 @@ export default function Home() {
                         style={{ width: `${skill.score}%`, backgroundColor: skill.color }}
                       />
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            </aside>
+            </motion.aside>
 
             {/* Right Column: Tab Content */}
-            <article className="rpg-content-panel" key={activeTab}>
-              {/* ═══ CHARACTER TAB ═══ */}
-              {activeTab === "Character" && (
-                <>
-                  <h3 className="rpg-content-title">🛡️ Character Bio</h3>
-                  <hr className="rpg-content-divider" />
-                  <p className="font-[family-name:var(--font-body)] text-[1.5rem] leading-[1.15] text-[#d4e6ff]">
-                    {characterBio.bio}
-                  </p>
+            <div className="rpg-content-panel" style={{ overflow: "hidden" }}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  variants={tabContentVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  {/* ═══ CHARACTER TAB ═══ */}
+                  {activeTab === "Character" && (
+                    <>
+                      <h3 className="rpg-content-title"><ShieldIcon size={16} /> Character Bio</h3>
+                      <hr className="rpg-content-divider" />
+                      <p className="font-[family-name:var(--font-body)] text-[1.5rem] leading-[1.15] text-[#d4e6ff]">
+                        {characterBio.bio}
+                      </p>
 
-                  <div className="mt-5">
-                    <h4 className="font-[family-name:var(--font-heading)] text-xs text-[#ffd36d]">⚔️ Class</h4>
-                    <p className="mt-1.5 font-[family-name:var(--font-body)] text-[1.6rem] leading-none text-[#e6f0ff]">
-                      {characterBio.playerClass}
-                    </p>
-                  </div>
+                      <SwordDivider />
 
-                  <div className="mt-5">
-                    <h4 className="font-[family-name:var(--font-heading)] text-xs text-[#ffd36d]">✨ Special Abilities</h4>
-                    <ul className="mt-2.5 space-y-1.5">
-                      {characterBio.abilities.map((a) => (
-                        <li key={a} className="font-[family-name:var(--font-body)] text-[1.4rem] leading-[1.15] text-[#b9d3ff]">
-                          • {a}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="mt-5">
-                    <h4 className="font-[family-name:var(--font-heading)] text-xs text-[#ffd36d]">🗡️ Current Quest</h4>
-                    <p className="mt-1.5 font-[family-name:var(--font-body)] text-[1.4rem] leading-[1.15] text-[#d4e6ff]">
-                      {characterBio.currentQuest}
-                    </p>
-                  </div>
-                </>
-              )}
-
-              {/* ═══ STATS TAB ═══ */}
-              {activeTab === "Stats" && (
-                <>
-                  <h3 className="rpg-content-title">📊 Tech Skills</h3>
-                  <hr className="rpg-content-divider" />
-                  <div className="rpg-skill-grid">
-                    {skills.map((s) => (
-                      <div key={s.name} className={`rpg-skill-card ${rarityClass(s.rarity)}`}>
-                        <div className="flex items-start justify-between gap-1">
-                          <span className="rpg-skill-name">{s.icon} {s.name}</span>
-                          <RarityBadge rarity={s.rarity} />
-                        </div>
-                        <p className="rpg-skill-level">Lvl {s.level}</p>
-                        <div className="rpg-skill-bar-track">
-                          <div
-                            className="rpg-skill-bar-fill"
-                            style={{ width: `${s.percent}%`, backgroundColor: s.color }}
-                          />
-                        </div>
+                      <div>
+                        <h4 className="font-[family-name:var(--font-heading)] text-xs text-[#ffd36d]">
+                          <SwordIcon size={14} className="inline-block mr-1 align-middle" /> Class
+                        </h4>
+                        <p className="mt-1.5 font-[family-name:var(--font-body)] text-[1.6rem] leading-none text-[#e6f0ff]">
+                          {characterBio.playerClass}
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                </>
-              )}
 
-              {/* ═══ QUESTS TAB ═══ */}
-              {activeTab === "Quests" && (
-                <>
-                  <h3 className="rpg-content-title">🗺️ Quest Board</h3>
-                  <hr className="rpg-content-divider" />
-
-                  {/* Active Quests */}
-                  <h4 className="font-[family-name:var(--font-heading)] text-[0.5rem] text-[#22c55e] tracking-widest mt-2">
-                    ⚡ ACTIVE QUESTS
-                  </h4>
-                  <div className="rpg-quest-list">
-                    {quests.filter((q) => q.status === "active").map((q) => (
-                      <div key={q.title} className="rpg-quest-card">
-                        <div className="rpg-quest-header">
-                          <span className="rpg-quest-title">⚔️ {q.title}</span>
-                          <span className="rpg-quest-status rpg-quest-status--active">ACTIVE</span>
-                        </div>
-                        <p className="rpg-quest-desc">{q.role} • {q.period}</p>
-                        <p className="rpg-quest-desc mt-1">{q.desc}</p>
-                        <div className="rpg-quest-xp">
-                          <span className="rpg-quest-xp-label">XP: {q.xp.toLocaleString()}/{q.maxXp.toLocaleString()}</span>
-                          <div className="rpg-stat-track" style={{ flex: 1 }}>
-                            <div
-                              className="rpg-stat-fill"
-                              style={{ width: `${(q.xp / q.maxXp) * 100}%`, backgroundColor: "#22c55e" }}
-                            />
-                          </div>
-                        </div>
-                        <div className="rpg-skill-tags mt-2">
-                          {q.milestones.map((m) => (
-                            <span key={m} className="rpg-skill-tag">✅ {m}</span>
+                      <div className="mt-5">
+                        <h4 className="font-[family-name:var(--font-heading)] text-xs text-[#ffd36d]">✨ Special Abilities</h4>
+                        <motion.ul className="mt-2.5 space-y-1.5" variants={staggerContainer} initial="hidden" animate="visible">
+                          {characterBio.abilities.map((a) => (
+                            <motion.li key={a} variants={staggerItem} className="font-[family-name:var(--font-body)] text-[1.4rem] leading-[1.15] text-[#b9d3ff]">
+                              • {a}
+                            </motion.li>
                           ))}
-                        </div>
+                        </motion.ul>
                       </div>
-                    ))}
-                  </div>
 
-                  {/* Completed Quests */}
-                  <h4 className="font-[family-name:var(--font-heading)] text-[0.5rem] text-[#7ba4ff] tracking-widest mt-5">
-                    ✅ COMPLETED QUESTS
-                  </h4>
-                  <div className="rpg-quest-list">
-                    {quests.filter((q) => q.status === "complete").map((q) => (
-                      <div key={q.title} className="rpg-quest-card" style={{ opacity: 0.85 }}>
-                        <div className="rpg-quest-header">
-                          <span className="rpg-quest-title">✅ {q.title}</span>
-                          <span className="rpg-quest-status rpg-quest-status--complete">COMPLETE</span>
-                        </div>
-                        <p className="rpg-quest-desc">{q.role} • {q.period}</p>
-                        <p className="rpg-quest-desc mt-1">{q.desc}</p>
-                        <div className="rpg-quest-xp">
-                          <span className="rpg-quest-xp-label">XP: MAX</span>
-                          <div className="rpg-stat-track" style={{ flex: 1 }}>
-                            <div
-                              className="rpg-stat-fill"
-                              style={{ width: "100%", backgroundColor: "#7ba4ff" }}
-                            />
-                          </div>
-                        </div>
+                      <div className="mt-5">
+                        <h4 className="font-[family-name:var(--font-heading)] text-xs text-[#ffd36d]">
+                          <MapIcon size={14} className="inline-block mr-1 align-middle" /> Current Quest
+                        </h4>
+                        <p className="mt-1.5 font-[family-name:var(--font-body)] text-[1.4rem] leading-[1.15] text-[#d4e6ff]">
+                          {characterBio.currentQuest}
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                </>
-              )}
+                    </>
+                  )}
 
-              {/* ═══ ACHIEVEMENTS TAB ═══ */}
-              {activeTab === "Achievements" && (
-                <>
-                  <h3 className="rpg-content-title">🏆 Achievement Wall</h3>
-                  <hr className="rpg-content-divider" />
+                  {/* ═══ STATS TAB ═══ */}
+                  {activeTab === "Stats" && (
+                    <>
+                      <h3 className="rpg-content-title"><ChartIcon size={16} /> Tech Skills</h3>
+                      <hr className="rpg-content-divider" />
+                      <motion.div className="rpg-skill-grid" variants={staggerContainer} initial="hidden" animate="visible">
+                        {skills.map((s) => (
+                          <motion.div key={s.name} variants={staggerItem} className={`rpg-skill-card ${rarityClass(s.rarity)}`}>
+                            <div className="flex items-start justify-between gap-1">
+                              <span className="rpg-skill-name">{s.icon} {s.name}</span>
+                              <RarityBadge rarity={s.rarity} />
+                            </div>
+                            <p className="rpg-skill-level">Lvl {s.level}</p>
+                            <div className="rpg-skill-bar-track">
+                              <div
+                                className="rpg-skill-bar-fill"
+                                style={{ width: `${s.percent}%`, backgroundColor: s.color }}
+                              />
+                            </div>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    </>
+                  )}
 
-                  <div className="rpg-achievement-grid">
-                    {achievements.map((a) => (
-                      <div key={a.title} className="rpg-achievement-card">
-                        <div className="rpg-achievement-icon">{a.icon}</div>
-                        <h4 className="rpg-achievement-title">{a.title}</h4>
-                        <p className="rpg-achievement-subtitle">{a.place}</p>
-                        <p className="rpg-achievement-subtitle" style={{ color: "#ffe078" }}>{a.period}</p>
-                        <p className="rpg-achievement-desc mt-2">{a.desc}</p>
-                        <div className="rpg-skill-tags">
-                          {a.skills.map((s) => (
-                            <span key={s} className="rpg-skill-tag">{s}</span>
-                          ))}
-                        </div>
-                        <div className="rpg-stars">
-                          {"⭐".repeat(a.stars)}{"☆".repeat(5 - a.stars)}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  {/* ═══ QUESTS TAB ═══ */}
+                  {activeTab === "Quests" && (
+                    <>
+                      <h3 className="rpg-content-title"><MapIcon size={16} /> Quest Board</h3>
+                      <hr className="rpg-content-divider" />
 
-                  {/* Certifications */}
-                  <h4 className="font-[family-name:var(--font-heading)] text-[0.55rem] text-[#ffd36d] tracking-widest mt-5">
-                    📜 CERTIFICATIONS
-                  </h4>
-                  <div className="rpg-skill-tags mt-2">
-                    {certifications.map((c) => (
-                      <span key={c} className="rpg-skill-tag">✅ {c}</span>
-                    ))}
-                  </div>
-                </>
-              )}
-
-              {/* ═══ INVENTORY TAB ═══ */}
-              {activeTab === "Inventory" && (
-                <>
-                  <h3 className="rpg-content-title">🎒 Project Inventory</h3>
-                  <hr className="rpg-content-divider" />
-
-                  <div className="rpg-inventory-grid">
-                    {projects.map((p) => (
-                      <div key={p.title} className="rpg-inventory-card">
-                        <div className="rpg-inventory-header">
-                          <span className="rpg-inventory-title">{p.icon} {p.title}</span>
-                          <RarityBadge rarity={p.rarity} />
-                        </div>
-                        <p className="rpg-inventory-desc">{p.desc}</p>
-
-                        {/* Stat Bars */}
-                        <div className="rpg-stat-bars">
-                          {[
-                            { name: "Power", value: p.power, color: "#ef4444" },
-                            { name: "Complexity", value: p.complexity, color: "#facc15" },
-                            { name: "Impact", value: p.impact, color: "#22c55e" },
-                          ].map((stat) => (
-                            <div key={stat.name} className="rpg-stat-row">
-                              <span className="rpg-stat-name">{stat.name}</span>
-                              <div className="rpg-stat-track">
+                      {/* Active Quests */}
+                      <h4 className="font-[family-name:var(--font-heading)] text-[0.5rem] text-[#22c55e] tracking-widest mt-2">
+                        ⚡ ACTIVE QUESTS
+                      </h4>
+                      <motion.div className="rpg-quest-list" variants={staggerContainer} initial="hidden" animate="visible">
+                        {quests.filter((q) => q.status === "active").map((q) => (
+                          <motion.div key={q.title} variants={staggerItem} className="rpg-quest-card">
+                            <div className="rpg-quest-header">
+                              <span className="rpg-quest-title"><SwordIcon size={12} className="inline-block mr-1 align-middle" /> {q.title}</span>
+                              <span className="rpg-quest-status rpg-quest-status--active">ACTIVE</span>
+                            </div>
+                            <p className="rpg-quest-desc">{q.role} • {q.period}</p>
+                            <p className="rpg-quest-desc mt-1">{q.desc}</p>
+                            <div className="rpg-quest-xp">
+                              <span className="rpg-quest-xp-label">XP: {q.xp.toLocaleString()}/{q.maxXp.toLocaleString()}</span>
+                              <div className="rpg-stat-track" style={{ flex: 1 }}>
                                 <div
                                   className="rpg-stat-fill"
-                                  style={{ width: `${stat.value}%`, backgroundColor: stat.color }}
+                                  style={{ width: `${(q.xp / q.maxXp) * 100}%`, backgroundColor: "#22c55e" }}
                                 />
                               </div>
-                              <span className="rpg-stat-value">{stat.value}</span>
                             </div>
-                          ))}
-                        </div>
+                            <div className="rpg-skill-tags mt-2">
+                              {q.milestones.map((m) => (
+                                <span key={m} className="rpg-skill-tag">✅ {m}</span>
+                              ))}
+                            </div>
+                          </motion.div>
+                        ))}
+                      </motion.div>
 
-                        {/* Tech Stack Tags */}
-                        <div className="rpg-skill-tags">
-                          {p.stack.map((t) => (
-                            <span key={t} className="rpg-skill-tag">{t}</span>
-                          ))}
-                        </div>
+                      <SwordDivider />
 
-                        {p.url && (
-                          <a href={p.url} target="_blank" rel="noopener noreferrer" className="rpg-inventory-link">
-                            🔗 Visit Project
-                          </a>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
+                      {/* Completed Quests */}
+                      <h4 className="font-[family-name:var(--font-heading)] text-[0.5rem] text-[#7ba4ff] tracking-widest">
+                        ✅ COMPLETED QUESTS
+                      </h4>
+                      <motion.div className="rpg-quest-list" variants={staggerContainer} initial="hidden" animate="visible">
+                        {quests.filter((q) => q.status === "complete").map((q) => (
+                          <motion.div key={q.title} variants={staggerItem} className="rpg-quest-card" style={{ opacity: 0.85 }}>
+                            <div className="rpg-quest-header">
+                              <span className="rpg-quest-title">✅ {q.title}</span>
+                              <span className="rpg-quest-status rpg-quest-status--complete">COMPLETE</span>
+                            </div>
+                            <p className="rpg-quest-desc">{q.role} • {q.period}</p>
+                            <p className="rpg-quest-desc mt-1">{q.desc}</p>
+                            <div className="rpg-quest-xp">
+                              <span className="rpg-quest-xp-label">XP: MAX</span>
+                              <div className="rpg-stat-track" style={{ flex: 1 }}>
+                                <div
+                                  className="rpg-stat-fill"
+                                  style={{ width: "100%", backgroundColor: "#7ba4ff" }}
+                                />
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    </>
+                  )}
 
-              {/* ═══ CONTACT TAB ═══ */}
-              {activeTab === "Contact" && (
-                <>
-                  <h3 className="rpg-content-title">📧 Guild Contact</h3>
-                  <hr className="rpg-content-divider" />
-                  <p className="font-[family-name:var(--font-body)] text-[1.4rem] leading-[1.15] text-[#b9d3ff] mb-4">
-                    Open to freelance and team opportunities in modern full-stack product development.
-                  </p>
+                  {/* ═══ ACHIEVEMENTS TAB ═══ */}
+                  {activeTab === "Achievements" && (
+                    <>
+                      <h3 className="rpg-content-title"><TrophyIcon size={16} /> Achievement Wall</h3>
+                      <hr className="rpg-content-divider" />
 
-                  <div className="rpg-contact-grid">
-                    {contacts.map((c) => (
-                      <a
-                        key={c.label}
-                        href={c.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rpg-contact-card"
-                      >
-                        <span className="rpg-contact-icon">{c.icon}</span>
-                        <div>
-                          <p className="rpg-contact-label">{c.label}</p>
-                          <p className="rpg-contact-value">{c.value}</p>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </>
-              )}
-            </article>
+                      <motion.div className="rpg-achievement-grid" variants={staggerContainer} initial="hidden" animate="visible">
+                        {achievements.map((a) => (
+                          <motion.div key={a.title} variants={staggerItem} className="rpg-achievement-card">
+                            <div className="rpg-achievement-icon">{a.icon}</div>
+                            <h4 className="rpg-achievement-title">{a.title}</h4>
+                            <p className="rpg-achievement-subtitle">{a.place}</p>
+                            <p className="rpg-achievement-subtitle" style={{ color: "#ffe078" }}>{a.period}</p>
+                            <p className="rpg-achievement-desc mt-2">{a.desc}</p>
+                            <div className="rpg-skill-tags">
+                              {a.skills.map((s) => (
+                                <span key={s} className="rpg-skill-tag">{s}</span>
+                              ))}
+                            </div>
+                            <div className="rpg-stars">
+                              {"⭐".repeat(a.stars)}{"☆".repeat(5 - a.stars)}
+                            </div>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+
+                      <SwordDivider />
+
+                      {/* Certifications */}
+                      <h4 className="font-[family-name:var(--font-heading)] text-[0.55rem] text-[#ffd36d] tracking-widest">
+                        📜 CERTIFICATIONS
+                      </h4>
+                      <motion.div className="rpg-skill-tags mt-2" variants={staggerContainer} initial="hidden" animate="visible">
+                        {certifications.map((c) => (
+                          <motion.span key={c} variants={staggerItem} className="rpg-skill-tag">✅ {c}</motion.span>
+                        ))}
+                      </motion.div>
+                    </>
+                  )}
+
+                  {/* ═══ INVENTORY TAB ═══ */}
+                  {activeTab === "Inventory" && (
+                    <>
+                      <h3 className="rpg-content-title"><ChestIcon size={16} /> Project Inventory</h3>
+                      <hr className="rpg-content-divider" />
+
+                      <motion.div className="rpg-inventory-grid" variants={staggerContainer} initial="hidden" animate="visible">
+                        {projects.map((p) => (
+                          <motion.div key={p.title} variants={staggerItem} className="rpg-inventory-card">
+                            <div className="rpg-inventory-header">
+                              <span className="rpg-inventory-title">{p.icon} {p.title}</span>
+                              <RarityBadge rarity={p.rarity} />
+                            </div>
+                            <p className="rpg-inventory-desc">{p.desc}</p>
+
+                            {/* Stat Bars */}
+                            <div className="rpg-stat-bars">
+                              {[
+                                { name: "Power", value: p.power, color: "#ef4444" },
+                                { name: "Complexity", value: p.complexity, color: "#facc15" },
+                                { name: "Impact", value: p.impact, color: "#22c55e" },
+                              ].map((stat) => (
+                                <div key={stat.name} className="rpg-stat-row">
+                                  <span className="rpg-stat-name">{stat.name}</span>
+                                  <div className="rpg-stat-track">
+                                    <div
+                                      className="rpg-stat-fill"
+                                      style={{ width: `${stat.value}%`, backgroundColor: stat.color }}
+                                    />
+                                  </div>
+                                  <span className="rpg-stat-value">{stat.value}</span>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Tech Stack Tags */}
+                            <div className="rpg-skill-tags">
+                              {p.stack.map((t) => (
+                                <span key={t} className="rpg-skill-tag">{t}</span>
+                              ))}
+                            </div>
+
+                            {p.url && (
+                              <a href={p.url} target="_blank" rel="noopener noreferrer" className="rpg-inventory-link">
+                                🔗 Visit Project
+                              </a>
+                            )}
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    </>
+                  )}
+
+                  {/* ═══ CONTACT TAB ═══ */}
+                  {activeTab === "Contact" && (
+                    <>
+                      <h3 className="rpg-content-title"><ScrollIcon size={16} /> Guild Contact</h3>
+                      <hr className="rpg-content-divider" />
+                      <p className="font-[family-name:var(--font-body)] text-[1.4rem] leading-[1.15] text-[#b9d3ff] mb-4">
+                        Open to freelance and team opportunities in modern full-stack product development.
+                      </p>
+
+                      <motion.div className="rpg-contact-grid" variants={staggerContainer} initial="hidden" animate="visible">
+                        {contacts.map((c) => (
+                          <motion.a
+                            key={c.label}
+                            href={c.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rpg-contact-card"
+                            variants={staggerItem}
+                            whileHover={{ scale: 1.02, y: -2 }}
+                          >
+                            <span className="rpg-contact-icon">{c.icon}</span>
+                            <div>
+                              <p className="rpg-contact-label">{c.label}</p>
+                              <p className="rpg-contact-value">{c.value}</p>
+                            </div>
+                          </motion.a>
+                        ))}
+                      </motion.div>
+                    </>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </section>
-        </div>
+        </motion.div>
       </main>
     </>
   );

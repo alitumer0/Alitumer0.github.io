@@ -1062,6 +1062,7 @@ img {
 }
 
 @media (max-width: 640px) {
+
   .flow-hero-stage,
   .flow-main-content {
     width: min(94vw, 680px);
@@ -1121,15 +1122,15 @@ img {
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 200, 255, 0.08), transparent),
-              radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.06), transparent),
-              radial-gradient(ellipse 50% 30% at 20% 80%, rgba(0, 255, 200, 0.04), transparent);
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.06), transparent),
+    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(0, 255, 200, 0.04), transparent);
   pointer-events: none;
 }
 
 .hero-grid {
   position: absolute;
   inset: 0;
-  background-image: 
+  background-image:
     linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 60px 60px;
@@ -1186,8 +1187,17 @@ img {
 }
 
 @keyframes scrollPulse {
-  0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
-  50% { opacity: 1; transform: scaleY(1); }
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scaleY(0.5);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 }
 
 /* ============================================
@@ -1216,11 +1226,11 @@ img {
   transform: scale(1.1);
 }
 
-.timeline-icon > div {
+.timeline-icon>div {
   transition: all 0.3s ease;
 }
 
-.timeline-card:hover .timeline-icon > div {
+.timeline-card:hover .timeline-icon>div {
   background: linear-gradient(135deg, rgba(0, 200, 255, 0.3), rgba(139, 92, 246, 0.3));
   box-shadow: 0 0 30px rgba(0, 200, 255, 0.3);
 }
@@ -1236,8 +1246,15 @@ img {
 }
 
 @keyframes bounceX {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(5px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
 }
 
 .timeline-progress {
@@ -1272,7 +1289,7 @@ img {
 
 .project-tilt-panel:hover {
   border-color: rgba(0, 200, 255, 0.4);
-  box-shadow: 
+  box-shadow:
     0 30px 60px rgba(0, 0, 0, 0.4),
     0 0 40px rgba(0, 200, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -1322,6 +1339,7 @@ img {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1346,16 +1364,16 @@ img {
   .hero-name {
     font-size: 2.5rem;
   }
-  
+
   .hero-role {
     font-size: 1rem;
   }
-  
+
   .timeline-container {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .timeline-card {
     width: 100% !important;
   }
@@ -1379,8 +1397,8 @@ img {
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 200, 255, 0.12), transparent),
-              radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.08), transparent),
-              radial-gradient(ellipse 50% 30% at 20% 80%, rgba(0, 255, 200, 0.05), transparent);
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.08), transparent),
+    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(0, 255, 200, 0.05), transparent);
   pointer-events: none;
   z-index: 0;
 }
@@ -1388,7 +1406,7 @@ img {
 .hero-grid {
   position: absolute;
   inset: 0;
-  background-image: 
+  background-image:
     linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
   background-size: 50px 50px;
@@ -1489,11 +1507,21 @@ img {
 }
 
 @keyframes scrollPulse {
-  0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
-  50% { opacity: 1; transform: scaleY(1); }
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scaleY(0.5);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -1510,42 +1538,87 @@ img {
 /* --- Keyframe Animations --- */
 
 @keyframes rpgBarFill {
-  from { width: 0; }
+  from {
+    width: 0;
+  }
 }
 
 @keyframes rpgLevelPulse {
-  0%, 100% { text-shadow: 0 0 6px rgba(255,211,109,0.3); }
-  50% { text-shadow: 0 0 18px rgba(255,211,109,0.8), 0 0 36px rgba(255,194,75,0.3); }
+
+  0%,
+  100% {
+    text-shadow: 0 0 6px rgba(255, 211, 109, 0.3);
+  }
+
+  50% {
+    text-shadow: 0 0 18px rgba(255, 211, 109, 0.8), 0 0 36px rgba(255, 194, 75, 0.3);
+  }
 }
 
 @keyframes rpgAuraRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes rpgGlowBorder {
-  0%, 100% { box-shadow: 0 0 8px rgba(255,194,75,0.2), inset 0 0 8px rgba(255,194,75,0.05); }
-  50% { box-shadow: 0 0 20px rgba(255,194,75,0.4), inset 0 0 12px rgba(255,194,75,0.1); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(255, 194, 75, 0.2), inset 0 0 8px rgba(255, 194, 75, 0.05);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(255, 194, 75, 0.4), inset 0 0 12px rgba(255, 194, 75, 0.1);
+  }
 }
 
 @keyframes rpgSweep {
-  from { transform: translateX(-120%) rotate(5deg); }
-  to { transform: translateX(120%) rotate(5deg); }
+  from {
+    transform: translateX(-120%) rotate(5deg);
+  }
+
+  to {
+    transform: translateX(120%) rotate(5deg);
+  }
 }
 
 @keyframes rpgFadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes rpgFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
 }
 
 @keyframes rpgShimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
 }
 
 /* --- Main Container --- */
@@ -1567,14 +1640,14 @@ img {
   width: 100%;
   max-width: 960px;
   margin: 0 auto;
-  border: 2px solid rgba(255,194,75,0.35);
+  border: 2px solid rgba(255, 194, 75, 0.35);
   border-radius: 4px;
   background: linear-gradient(180deg, #0d1a3a 0%, #091230 100%);
   padding: 1.5rem;
   box-shadow:
-    0 0 0 2px rgba(139,77,27,0.5),
-    0 0 40px rgba(255,194,75,0.08),
-    0 20px 60px rgba(0,0,0,0.6);
+    0 0 0 2px rgba(139, 77, 27, 0.5),
+    0 0 40px rgba(255, 194, 75, 0.08),
+    0 20px 60px rgba(0, 0, 0, 0.6);
   animation: rpgFadeInUp 0.6s ease-out;
 }
 
@@ -1582,7 +1655,7 @@ img {
   content: "";
   position: absolute;
   inset: 3px;
-  border: 1px solid rgba(74,125,255,0.12);
+  border: 1px solid rgba(74, 125, 255, 0.12);
   border-radius: 2px;
   pointer-events: none;
 }
@@ -1595,7 +1668,7 @@ img {
   font-size: clamp(1.3rem, 4vw, 2.2rem);
   font-weight: 700;
   color: #ffc24b;
-  text-shadow: 0 0 20px rgba(255,194,75,0.3);
+  text-shadow: 0 0 20px rgba(255, 194, 75, 0.3);
   letter-spacing: 0.04em;
   margin: 0;
 }
@@ -1644,7 +1717,7 @@ img {
   content: "";
   position: absolute;
   inset: -30% -60%;
-  background: linear-gradient(104deg, transparent 36%, rgba(255,255,255,0.12) 50%, transparent 64%);
+  background: linear-gradient(104deg, transparent 36%, rgba(255, 255, 255, 0.12) 50%, transparent 64%);
   transform: translateX(-120%) rotate(5deg);
   transition: transform 0.5s ease;
   pointer-events: none;
@@ -1664,8 +1737,8 @@ img {
   border-color: #90b8ff;
   background: linear-gradient(180deg, #5d86f6, #3a5cc0);
   color: #fff;
-  box-shadow: 0 0 14px rgba(93,134,246,0.35), inset 0 0 0 1px rgba(179,204,255,0.3);
-  text-shadow: 0 0 8px rgba(255,255,255,0.3);
+  box-shadow: 0 0 14px rgba(93, 134, 246, 0.35), inset 0 0 0 1px rgba(179, 204, 255, 0.3);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 .rpg-tab-icon {
@@ -1701,7 +1774,7 @@ img {
   border: 4px solid #cb7928;
   background: #0d224f;
   padding: 4px;
-  box-shadow: 0 0 20px rgba(255,194,75,0.1);
+  box-shadow: 0 0 20px rgba(255, 194, 75, 0.1);
   animation: rpgGlowBorder 4s ease-in-out infinite;
 }
 
@@ -1710,7 +1783,7 @@ img {
   position: absolute;
   inset: -8px;
   border-radius: 2px;
-  background: conic-gradient(from 0deg, transparent, rgba(255,194,75,0.15), transparent, rgba(74,125,255,0.1), transparent);
+  background: conic-gradient(from 0deg, transparent, rgba(255, 194, 75, 0.15), transparent, rgba(74, 125, 255, 0.1), transparent);
   animation: rpgAuraRotate 12s linear infinite;
   z-index: -1;
   filter: blur(6px);
@@ -1805,7 +1878,7 @@ img {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: rpgShimmer 2.5s linear infinite;
 }
@@ -1867,7 +1940,7 @@ img {
   content: "";
   position: absolute;
   inset: -30% -60%;
-  background: linear-gradient(104deg, transparent 36%, rgba(255,255,255,0.08) 50%, transparent 64%);
+  background: linear-gradient(104deg, transparent 36%, rgba(255, 255, 255, 0.08) 50%, transparent 64%);
   transform: translateX(-120%) rotate(5deg);
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
@@ -1876,18 +1949,32 @@ img {
 .rpg-skill-card:hover {
   border-color: #6090e8;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .rpg-skill-card:hover::after {
   transform: translateX(120%) rotate(5deg);
 }
 
-.rpg-skill-card--legendary { border-color: rgba(255,194,75,0.5); }
-.rpg-skill-card--legendary:hover { box-shadow: 0 0 20px rgba(255,194,75,0.2), 0 8px 24px rgba(0,0,0,0.3); }
-.rpg-skill-card--epic { border-color: rgba(168,85,247,0.5); }
-.rpg-skill-card--epic:hover { box-shadow: 0 0 20px rgba(168,85,247,0.2), 0 8px 24px rgba(0,0,0,0.3); }
-.rpg-skill-card--rare { border-color: rgba(74,125,255,0.4); }
+.rpg-skill-card--legendary {
+  border-color: rgba(255, 194, 75, 0.5);
+}
+
+.rpg-skill-card--legendary:hover {
+  box-shadow: 0 0 20px rgba(255, 194, 75, 0.2), 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.rpg-skill-card--epic {
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+.rpg-skill-card--epic:hover {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.2), 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.rpg-skill-card--rare {
+  border-color: rgba(74, 125, 255, 0.4);
+}
 
 .rpg-skill-name {
   font-family: var(--font-heading), monospace;
@@ -1926,15 +2013,15 @@ img {
 }
 
 .rpg-quest-card {
-  border: 1px solid rgba(74,125,255,0.3);
+  border: 1px solid rgba(74, 125, 255, 0.3);
   background: linear-gradient(160deg, #132d60, #0d1f4a);
   padding: 0.85rem;
   transition: all 0.3s ease;
 }
 
 .rpg-quest-card:hover {
-  border-color: rgba(74,125,255,0.5);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  border-color: rgba(74, 125, 255, 0.5);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .rpg-quest-header {
@@ -1964,14 +2051,14 @@ img {
 }
 
 .rpg-quest-status--active {
-  background: rgba(34,197,94,0.15);
-  border: 1px solid rgba(34,197,94,0.4);
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.4);
   color: #22c55e;
 }
 
 .rpg-quest-status--complete {
-  background: rgba(74,125,255,0.15);
-  border: 1px solid rgba(74,125,255,0.4);
+  background: rgba(74, 125, 255, 0.15);
+  border: 1px solid rgba(74, 125, 255, 0.4);
   color: #7ba4ff;
 }
 
@@ -2012,15 +2099,15 @@ img {
 }
 
 .rpg-achievement-card {
-  border: 1px solid rgba(74,125,255,0.3);
+  border: 1px solid rgba(74, 125, 255, 0.3);
   background: linear-gradient(160deg, #132d60, #0d1f4a);
   padding: 0.85rem;
   transition: all 0.3s ease;
 }
 
 .rpg-achievement-card:hover {
-  border-color: rgba(255,194,75,0.3);
-  box-shadow: 0 0 16px rgba(255,194,75,0.08), 0 6px 20px rgba(0,0,0,0.3);
+  border-color: rgba(255, 194, 75, 0.3);
+  box-shadow: 0 0 16px rgba(255, 194, 75, 0.08), 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .rpg-achievement-icon {
@@ -2062,8 +2149,8 @@ img {
   font-size: 0.4rem;
   letter-spacing: 0.08em;
   color: #9ac0ff;
-  border: 1px solid rgba(74,125,255,0.35);
-  background: rgba(74,125,255,0.1);
+  border: 1px solid rgba(74, 125, 255, 0.35);
+  background: rgba(74, 125, 255, 0.1);
   padding: 0.15rem 0.4rem;
   border-radius: 2px;
 }
@@ -2090,7 +2177,7 @@ img {
 }
 
 .rpg-inventory-card {
-  border: 1px solid rgba(74,125,255,0.3);
+  border: 1px solid rgba(74, 125, 255, 0.3);
   background: linear-gradient(160deg, #132d60, #0d1f4a);
   padding: 0.85rem;
   transition: all 0.3s ease;
@@ -2102,15 +2189,15 @@ img {
   content: "";
   position: absolute;
   inset: -30% -60%;
-  background: linear-gradient(104deg, transparent 36%, rgba(255,255,255,0.06) 50%, transparent 64%);
+  background: linear-gradient(104deg, transparent 36%, rgba(255, 255, 255, 0.06) 50%, transparent 64%);
   transform: translateX(-120%) rotate(5deg);
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
 }
 
 .rpg-inventory-card:hover {
-  border-color: rgba(255,194,75,0.3);
-  box-shadow: 0 0 16px rgba(255,194,75,0.08), 0 8px 24px rgba(0,0,0,0.3);
+  border-color: rgba(255, 194, 75, 0.3);
+  box-shadow: 0 0 16px rgba(255, 194, 75, 0.08), 0 8px 24px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
@@ -2190,8 +2277,8 @@ img {
   font-family: var(--font-heading), monospace;
   font-size: 0.45rem;
   color: #9ac0ff;
-  border: 1px solid rgba(74,125,255,0.35);
-  background: rgba(74,125,255,0.1);
+  border: 1px solid rgba(74, 125, 255, 0.35);
+  background: rgba(74, 125, 255, 0.1);
   padding: 0.25rem 0.55rem;
   border-radius: 2px;
   cursor: pointer;
@@ -2200,8 +2287,8 @@ img {
 }
 
 .rpg-inventory-link:hover {
-  background: rgba(74,125,255,0.2);
-  border-color: rgba(74,125,255,0.5);
+  background: rgba(74, 125, 255, 0.2);
+  border-color: rgba(74, 125, 255, 0.5);
   color: #c0d8ff;
 }
 
@@ -2221,7 +2308,7 @@ img {
 }
 
 .rpg-contact-card {
-  border: 1px solid rgba(74,125,255,0.3);
+  border: 1px solid rgba(74, 125, 255, 0.3);
   background: linear-gradient(160deg, #132d60, #0d1f4a);
   padding: 0.75rem;
   text-decoration: none;
@@ -2232,8 +2319,8 @@ img {
 }
 
 .rpg-contact-card:hover {
-  border-color: rgba(255,194,75,0.3);
-  box-shadow: 0 0 12px rgba(255,194,75,0.08);
+  border-color: rgba(255, 194, 75, 0.3);
+  box-shadow: 0 0 12px rgba(255, 194, 75, 0.08);
   transform: translateY(-1px);
 }
 
@@ -2255,4 +2342,33 @@ img {
   color: #e0e8ff;
   margin-top: 0.1rem;
   line-height: 1;
+}
+
+/* --- Sword Divider --- */
+
+.rpg-sword-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.rpg-sword-divider-line {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ba6a25, #ffc24b, #ba6a25, transparent);
+}
+
+.rpg-sword-divider-icon {
+  flex-shrink: 0;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 4px rgba(255, 194, 75, 0.3));
+  animation: rpgFloat 4s ease-in-out infinite;
+}
+
+/* --- Tab content animation wrapper --- */
+
+.rpg-tab-content-enter {
+  animation: rpgFadeInUp 0.35s ease-out;
 }
