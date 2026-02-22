@@ -1,24 +1,23 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
+import { Press_Start_2P, VT323 } from "next/font/google";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
-
-const heading = Playfair_Display({
+const heading = Press_Start_2P({
   subsets: ["latin"],
   variable: "--font-heading",
-  weight: ["500", "700", "800"]
+  weight: "400"
 });
 
-const body = Inter({
+const body = VT323({
   subsets: ["latin"],
   variable: "--font-body",
-  weight: ["400", "500", "600", "700"]
+  weight: "400"
 });
 
 export const metadata: Metadata = {
-  title: "Ali Tumer | Museum Portfolio",
-  description: "Minimal portfolio with premium glass UI, multilingual content, and subtle gradient-flow motion."
+  title: "RPG Character Sheet Portfolio",
+  description: "Retro RPG styled, responsive character sheet portfolio page built with Next.js and Tailwind CSS."
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

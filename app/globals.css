@@ -61,6 +61,11 @@ a {
   text-decoration: none;
 }
 
+img {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
 :focus-visible {
   outline: 2px solid color-mix(in srgb, var(--accent) 65%, white 35%);
   outline-offset: 2px;
