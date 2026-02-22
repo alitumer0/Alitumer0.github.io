@@ -29,15 +29,16 @@ const tabs: { key: SheetTab; icon: React.ReactNode; label: string }[] = [
 /* ─── Data ─── */
 
 const characterBio = {
-  bio: "I am a passionate Full-Stack Developer with strong problem-solving skills and a focus on creating user-friendly applications. I continuously improve my skills and stay current with modern technology trends.",
+  bio: "Ambitious Junior Full-Stack Developer building production-ready web & mobile applications. From Flutter apps to automated SaaS backends with N8N, I ship real products that solve real problems. Driven by clean code, modern architecture, and continuous learning.",
   playerClass: "Full-Stack Developer",
   abilities: [
     "Problem-Solving & Analytical Thinking",
-    "Teamwork, Leadership and Communication",
-    "React.js / Next.js Frontend Development",
-    "ASP.NET Core and RESTful API Development",
+    "React.js / Next.js & Flutter Mobile Development",
+    "ASP.NET Core, REST APIs & N8N Automation",
+    "CI/CD, Docker & Cloud Deployment",
+    "Teamwork, Agile/Scrum & Client Communication",
   ],
-  currentQuest: "Building AI-powered products while delivering production-ready full-stack web applications.",
+  currentQuest: "Shipping production-ready web & mobile apps while building backend automation tools. From Flutter cross-platform apps to N8N-powered SaaS backends.",
 };
 
 const progressBars = [
@@ -65,14 +66,17 @@ const skills: Skill[] = [
   { name: "TypeScript", level: 8, percent: 80, rarity: "EPIC", color: "#3178c6", icon: "🔷", xpNeeded: 3100 },
   { name: "C#", level: 8, percent: 82, rarity: "EPIC", color: "#9b4dca", icon: "🎯", xpNeeded: 2700 },
   { name: "ASP.NET Core", level: 8, percent: 80, rarity: "EPIC", color: "#512bd4", icon: "🏗️", xpNeeded: 3200 },
+  { name: "Flutter", level: 7, percent: 72, rarity: "RARE", color: "#02569B", icon: "📱", xpNeeded: 4200 },
+  { name: "Dart", level: 7, percent: 70, rarity: "RARE", color: "#0175C2", icon: "🎯", xpNeeded: 4500 },
   { name: "Python", level: 7, percent: 70, rarity: "RARE", color: "#3572a5", icon: "🐍", xpNeeded: 4500 },
   { name: "HTML/CSS", level: 9, percent: 93, rarity: "LEGENDARY", color: "#e44d26", icon: "🎨", xpNeeded: 800 },
   { name: "SQL Server", level: 7, percent: 72, rarity: "RARE", color: "#cc2927", icon: "🗄️", xpNeeded: 4200 },
   { name: "MongoDB", level: 6, percent: 62, rarity: "RARE", color: "#47a248", icon: "🍃", xpNeeded: 5800 },
+  { name: "Firebase", level: 7, percent: 68, rarity: "RARE", color: "#FFCA28", icon: "🔥", xpNeeded: 4800 },
   { name: "Docker", level: 6, percent: 60, rarity: "RARE", color: "#2496ed", icon: "📦", xpNeeded: 6000 },
   { name: "Git", level: 9, percent: 90, rarity: "LEGENDARY", color: "#f05032", icon: "🔀", xpNeeded: 1100 },
   { name: "Tailwind", level: 8, percent: 84, rarity: "EPIC", color: "#06b6d4", icon: "🌊", xpNeeded: 2400 },
-  { name: "Bootstrap", level: 7, percent: 75, rarity: "RARE", color: "#7952b3", icon: "🅱️", xpNeeded: 3800 },
+  { name: "N8N", level: 7, percent: 74, rarity: "RARE", color: "#FF6D00", icon: "⚙️", xpNeeded: 4000 },
   { name: "REST APIs", level: 8, percent: 85, rarity: "EPIC", color: "#22c55e", icon: "🔌", xpNeeded: 2200 },
 ];
 
@@ -97,12 +101,28 @@ const quests: Quest[] = [
     milestones: ["React Mastery", "API Design", "Database Modeling"],
   },
   {
+    title: "SaaS Machine",
+    role: "Full-Stack Developer & Automation Engineer",
+    period: "2025 — Present",
+    desc: "Building an N8N-based backend automation platform that simplifies SaaS development workflows.",
+    xp: 8000, maxXp: 10000, status: "active",
+    milestones: ["N8N Workflows", "API Orchestration", "Docker Deployment"],
+  },
+  {
     title: "Freelance Development",
     role: "Full-Stack Developer",
     period: "2024 — Present",
     desc: "Delivering custom web solutions for clients, from landing pages to full SaaS platforms.",
     xp: 6200, maxXp: 10000, status: "active",
     milestones: ["Client Management", "E2E Delivery", "CI/CD Pipelines"],
+  },
+  {
+    title: "Flutter Mobile Apps",
+    role: "Mobile Developer",
+    period: "2024 — 2025",
+    desc: "Built cross-platform mobile apps (Pet-Adopt, Fridgly) with Flutter & Firebase.",
+    xp: 10000, maxXp: 10000, status: "complete",
+    milestones: ["Flutter Mastery", "Firebase Auth", "State Management"],
   },
   {
     title: "Student Management System",
@@ -148,7 +168,16 @@ const achievements: Achievement[] = [
   },
 ];
 
-const certifications = ["Git/GitHub/GitLab", "Jira", "Web Scraping", "Python Programming", "Agile/Scrum"];
+const certifications = [
+  "Git/GitHub/GitLab", "Jira", "Web Scraping", "Python Programming", "Agile/Scrum",
+  "Flutter & Dart", "Firebase & Cloud", "N8N Automation", "Docker", "RESTful API Design",
+];
+
+const languages = [
+  { flag: "🇹🇷", name: "Türkçe", level: "Native", stars: 5 },
+  { flag: "🇬🇧", name: "English", level: "B2 — Upper-Intermediate", stars: 4 },
+  { flag: "🇩🇪", name: "Deutsch", level: "B1 — Intermediate", stars: 3 },
+];
 
 interface Project {
   icon: string; title: string; rarity: Rarity; desc: string;
@@ -157,18 +186,33 @@ interface Project {
 
 const projects: Project[] = [
   {
+    icon: "⚙️", title: "SaaS Machine", rarity: "LEGENDARY",
+    desc: "No-code/low-code backend automation platform built on N8N — simplifies complex workflows, API integrations, and data pipelines for SaaS products.",
+    power: 88, complexity: 85, impact: 90, stack: ["N8N", "Node.js", "REST API", "Webhooks", "Docker"]
+  },
+  {
+    icon: "🍽️", title: "AllerCheck", rarity: "LEGENDARY",
+    desc: "Food allergy-safe consumption platform helping users identify allergens and safe alternatives.",
+    power: 90, complexity: 75, impact: 92, stack: ["React", "Node.js", "MongoDB", "REST API"]
+  },
+  {
     icon: "🏢", title: "Advance Management System", rarity: "EPIC",
     desc: "Enterprise approval workflows, notifications, and reporting dashboard.",
     power: 85, complexity: 80, impact: 88, stack: ["ASP.NET Core", "React", "SQL Server", "Identity"]
   },
   {
-    icon: "🍽️", title: "AllerCheck", rarity: "LEGENDARY",
-    desc: "Food allergy-safe consumption platform helping users identify allergens.",
-    power: 90, complexity: 75, impact: 92, stack: ["React", "Node.js", "MongoDB", "REST API"]
+    icon: "🐾", title: "Pet-Adopt", rarity: "EPIC",
+    desc: "Cross-platform pet adoption app with shelter listings, favorites, and real-time notifications.",
+    power: 80, complexity: 78, impact: 85, stack: ["Flutter", "Dart", "Firebase", "REST API"]
+  },
+  {
+    icon: "🧊", title: "Fridgly", rarity: "EPIC",
+    desc: "Smart fridge management app — track ingredients, get expiry alerts, and reduce food waste.",
+    power: 78, complexity: 72, impact: 82, stack: ["Flutter", "Dart", "Firebase", "Local Storage"]
   },
   {
     icon: "📈", title: "Stock Trading Bot", rarity: "EPIC",
-    desc: "Automated trading bot with real-time market analysis and React dashboard.",
+    desc: "Automated trading bot with real-time market analysis and React frontend dashboard.",
     power: 82, complexity: 90, impact: 78, stack: ["C#", "React", "WebSocket", "Market APIs"]
   },
   {
@@ -571,6 +615,24 @@ export default function Home() {
                       <motion.div className="rpg-skill-tags mt-2" variants={staggerContainer} initial="hidden" animate="visible">
                         {certifications.map((c) => (
                           <motion.span key={c} variants={staggerItem} className="rpg-skill-tag">✅ {c}</motion.span>
+                        ))}
+                      </motion.div>
+
+                      <SwordDivider />
+
+                      <h4 className="font-[family-name:var(--font-heading)] text-[0.55rem] text-[#7ba4ff] tracking-widest mt-4">
+                        🌍 LANGUAGES
+                      </h4>
+                      <motion.div className="mt-3 space-y-3" variants={staggerContainer} initial="hidden" animate="visible">
+                        {languages.map((lang) => (
+                          <motion.div key={lang.name} variants={staggerItem} className="flex items-center gap-3 p-3 rounded-md bg-[#0d1a3a]/60 border border-[rgba(93,134,246,0.2)]">
+                            <span className="text-2xl">{lang.flag}</span>
+                            <div className="flex-1">
+                              <h5 className="font-[family-name:var(--font-body)] text-lg text-[#d4e6ff]">{lang.name}</h5>
+                              <p className="font-[family-name:var(--font-heading)] text-[0.6rem] text-[#9dc1ff] tracking-wider uppercase">{lang.level}</p>
+                            </div>
+                            <div className="rpg-stars text-sm">{"⭐".repeat(lang.stars)}{"☆".repeat(5 - lang.stars)}</div>
+                          </motion.div>
                         ))}
                       </motion.div>
                     </>
