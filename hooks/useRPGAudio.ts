@@ -33,7 +33,7 @@ export function useRPGSound(enabled: boolean) {
             gain.connect(ctx.destination);
             osc.start(ctx.currentTime);
             osc.stop(ctx.currentTime + cfg.dur + 0.01);
-        } catch {
+        } catch (_e) {
             // silently ignore audio errors
         }
     }, [enabled]);
@@ -93,7 +93,7 @@ export function useRPGMusic(enabled: boolean) {
                 osc.stop(ctx2.currentTime + 0.65);
                 step++;
             }, 800);
-        } catch {
+        } catch (_e) {
             // silently ignore
         }
     }, [enabled]);
@@ -101,8 +101,8 @@ export function useRPGMusic(enabled: boolean) {
     const stop = useCallback(() => {
         playingRef.current = false;
         nodesRef.current.forEach(({ osc, gain }) => {
-            try { gain.gain.exponentialRampToValueAtTime(0.001, (ctxRef.current?.currentTime ?? 0) + 0.5); } catch { }
-            try { osc.stop((ctxRef.current?.currentTime ?? 0) + 0.6); } catch { }
+            try { gain.gain.exponentialRampToValueAtTime(0.001, (ctxRef.current?.currentTime ?? 0) + 0.5); } catch (_e) { /* ignore */ }
+            try { osc.stop((ctxRef.current?.currentTime ?? 0) + 0.6); } catch (_e) { /* ignore */ }
         });
         nodesRef.current = [];
         if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
