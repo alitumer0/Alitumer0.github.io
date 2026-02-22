@@ -251,8 +251,8 @@ const contacts = [
 
 const tabContentVariants = {
   hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
-  exit: { opacity: 0, y: -10, transition: { duration: 0.2, ease: "easeIn" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" as const } },
+  exit: { opacity: 0, y: -10, transition: { duration: 0.2, ease: "easeIn" as const } },
 };
 
 const staggerContainer = {
@@ -261,7 +261,7 @@ const staggerContainer = {
 
 const staggerItem = {
   hidden: { opacity: 0, y: 14 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" as const } },
 };
 
 /* ─── Rarity CSS helper ─── */
