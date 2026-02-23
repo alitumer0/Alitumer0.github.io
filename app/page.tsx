@@ -229,7 +229,6 @@ const projects: Project[] = [
 
 const contacts = [
   { icon: "📧", label: "EMAIL", value: "aetumer50@gmail.com", href: "mailto:aetumer50@gmail.com" },
-  { icon: "📱", label: "MOBILE", value: "+90 541 271 8051", href: "tel:+905412718051" },
   { icon: "🌐", label: "PORTFOLIO", value: "alitumer.help", href: "https://alitumer.help" },
   { icon: "💻", label: "GITHUB", value: "github.com/alitumer0", href: "https://github.com/alitumer0" },
   { icon: "💼", label: "LINKEDIN", value: "linkedin.com/in/alitumer", href: "https://linkedin.com/in/alitumer" },
