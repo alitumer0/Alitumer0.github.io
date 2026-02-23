@@ -29,16 +29,16 @@ const tabs: { key: SheetTab; icon: React.ReactNode; label: string }[] = [
 /* ─── Data ─── */
 
 const characterBio = {
-  bio: "Ambitious Junior Full-Stack Developer building production-ready web & mobile applications. From Flutter apps to automated SaaS backends with N8N, I ship real products that solve real problems. Driven by clean code, modern architecture, and continuous learning.",
+  bio: "Full-Stack Developer focused on shipping usable products end-to-end: from frontend experience to backend automation and deployment. I build with measurable outcomes, maintainable architecture, and clear delivery ownership.",
   playerClass: "Full-Stack Developer",
   abilities: [
-    "Problem-Solving & Analytical Thinking",
-    "React.js / Next.js & Flutter Mobile Development",
-    "ASP.NET Core, REST APIs & N8N Automation",
-    "CI/CD, Docker & Cloud Deployment",
-    "Teamwork, Agile/Scrum & Client Communication",
+    "Built and delivered 8+ real portfolio/client products",
+    "Balanced web + mobile delivery with React/Next.js and Flutter",
+    "Designed backend flows using ASP.NET Core, REST APIs and N8N automation",
+    "Managed deployment workflow with Docker, Git and CI/CD practices",
+    "Worked in Agile delivery loops with direct client communication",
   ],
-  currentQuest: "Shipping production-ready web & mobile apps while building backend automation tools. From Flutter cross-platform apps to N8N-powered SaaS backends.",
+  currentQuest: "Scaling from solo product delivery to larger cross-functional projects with stronger architecture and release discipline.",
 };
 
 const progressBars = [
@@ -47,6 +47,20 @@ const progressBars = [
   { name: "Teamwork", score: 88, color: "#22c55e", icon: "🤝" },
   { name: "Communication", score: 87, color: "#facc15", icon: "💬" },
   { name: "Time Management", score: 85, color: "#ef4444", icon: "⏰" },
+];
+
+const proofStats = [
+  { label: "Projects Shipped", value: "8+" },
+  { label: "Active Build Tracks", value: "3" },
+  { label: "Core Tech Skills", value: "18" },
+  { label: "Certifications", value: "10" },
+  { label: "Working Languages", value: "3" },
+];
+
+const characterHighlights = [
+  "Delivered projects across web, mobile and automation domains",
+  "Strong execution in full project lifecycle: design, build, test, deploy",
+  "Practical focus on clean UX, maintainable code and business-ready features",
 ];
 
 interface Skill {
@@ -96,49 +110,49 @@ const quests: Quest[] = [
     title: "BilgeAdam Akademi",
     role: "Full-Stack Developer Intern",
     period: "Oct 2024 — Present",
-    desc: "Building enterprise-grade applications with ASP.NET Core, React, and SQL Server.",
+    desc: "Challenge: enterprise workflows. Action: built modules with ASP.NET Core + React + SQL Server. Result: production-style full-stack delivery experience.",
     xp: 8500, maxXp: 10000, status: "active",
-    milestones: ["React Mastery", "API Design", "Database Modeling"],
+    milestones: ["Built modular UI flows", "Designed API contracts", "Implemented DB-backed features"],
   },
   {
     title: "SaaS Machine",
     role: "Full-Stack Developer & Automation Engineer",
     period: "2025 — Present",
-    desc: "Building an N8N-based backend automation platform that simplifies SaaS development workflows.",
+    desc: "Challenge: repetitive backend ops. Action: built N8N-based automation pipelines. Result: faster integration workflows and cleaner orchestration.",
     xp: 8000, maxXp: 10000, status: "active",
-    milestones: ["N8N Workflows", "API Orchestration", "Docker Deployment"],
+    milestones: ["Automated workflow chains", "Connected API/webhook layers", "Containerized runtime setup"],
   },
   {
     title: "Freelance Development",
     role: "Full-Stack Developer",
     period: "2024 — Present",
-    desc: "Delivering custom web solutions for clients, from landing pages to full SaaS platforms.",
+    desc: "Challenge: diverse client needs. Action: delivered custom apps from landing pages to SaaS modules. Result: 8+ practical builds and reusable patterns.",
     xp: 6200, maxXp: 10000, status: "active",
-    milestones: ["Client Management", "E2E Delivery", "CI/CD Pipelines"],
+    milestones: ["Scoped requirements", "Executed end-to-end delivery", "Applied repeatable release process"],
   },
   {
     title: "Flutter Mobile Apps",
     role: "Mobile Developer",
     period: "2024 — 2025",
-    desc: "Built cross-platform mobile apps (Pet-Adopt, Fridgly) with Flutter & Firebase.",
+    desc: "Challenge: cross-platform product quality. Action: shipped Flutter + Firebase apps. Result: stable mobile flows for real use-cases.",
     xp: 10000, maxXp: 10000, status: "complete",
-    milestones: ["Flutter Mastery", "Firebase Auth", "State Management"],
+    milestones: ["Implemented auth/data flows", "Handled stateful UI", "Published complete app journeys"],
   },
   {
     title: "Student Management System",
     role: "Full-Stack Developer",
     period: "2024",
-    desc: "Complete student management system with authentication, reporting and clean UX.",
+    desc: "Challenge: academic operations management. Action: built auth, CRUD and reporting modules. Result: complete management workflow in one product.",
     xp: 10000, maxXp: 10000, status: "complete",
-    milestones: ["Auth System", "Reporting Dashboard", "UX Design"],
+    milestones: ["Role-based authentication", "Reporting dashboard", "Responsive interface design"],
   },
   {
     title: "Asset & Inventory Systems",
     role: "Backend Developer",
     period: "2024",
-    desc: "Asset assignment, inventory tracking, and library automation systems.",
+    desc: "Challenge: traceability and control. Action: built asset assignment and inventory tracking systems. Result: clearer operational visibility.",
     xp: 10000, maxXp: 10000, status: "complete",
-    milestones: ["Asset Tracking", "Automation", "Inventory Logic"],
+    milestones: ["Modeled inventory logic", "Implemented assignment tracking", "Automated repetitive admin flows"],
   },
 ];
 
@@ -187,42 +201,42 @@ interface Project {
 const projects: Project[] = [
   {
     icon: "⚙️", title: "SaaS Machine", rarity: "LEGENDARY",
-    desc: "No-code/low-code backend automation platform built on N8N — simplifies complex workflows, API integrations, and data pipelines for SaaS products.",
+    desc: "Challenge: repetitive backend operations. Action: built N8N automation engine with API/webhook chains. Result: simplified SaaS workflow orchestration.",
     power: 88, complexity: 85, impact: 90, stack: ["N8N", "Node.js", "REST API", "Webhooks", "Docker"]
   },
   {
     icon: "🍽️", title: "AllerCheck", rarity: "LEGENDARY",
-    desc: "Food allergy-safe consumption platform helping users identify allergens and safe alternatives.",
+    desc: "Challenge: safe food selection. Action: built allergen-aware platform with blacklist logic. Result: clearer and safer consumption decisions.",
     power: 90, complexity: 75, impact: 92, stack: ["React", "Node.js", "MongoDB", "REST API"]
   },
   {
     icon: "🏢", title: "Advance Management System", rarity: "EPIC",
-    desc: "Enterprise approval workflows, notifications, and reporting dashboard.",
+    desc: "Challenge: manual advance-request flow. Action: implemented approval steps, notifications and reports. Result: traceable enterprise process flow.",
     power: 85, complexity: 80, impact: 88, stack: ["ASP.NET Core", "React", "SQL Server", "Identity"]
   },
   {
     icon: "🐾", title: "Pet-Adopt", rarity: "EPIC",
-    desc: "Cross-platform pet adoption app with shelter listings, favorites, and real-time notifications.",
+    desc: "Challenge: fragmented adoption journey. Action: developed cross-platform shelter/favorites workflow. Result: smoother adoption discovery experience.",
     power: 80, complexity: 78, impact: 85, stack: ["Flutter", "Dart", "Firebase", "REST API"]
   },
   {
     icon: "🧊", title: "Fridgly", rarity: "EPIC",
-    desc: "Smart fridge management app — track ingredients, get expiry alerts, and reduce food waste.",
+    desc: "Challenge: ingredient waste management. Action: built expiry-aware fridge tracking app. Result: better household inventory visibility.",
     power: 78, complexity: 72, impact: 82, stack: ["Flutter", "Dart", "Firebase", "Local Storage"]
   },
   {
     icon: "📈", title: "Stock Trading Bot", rarity: "EPIC",
-    desc: "Automated trading bot with real-time market analysis and React frontend dashboard.",
+    desc: "Challenge: manual trading analysis. Action: developing automated strategy bot + dashboard. Result: ongoing system for faster decision support.",
     power: 82, complexity: 90, impact: 78, stack: ["C#", "React", "WebSocket", "Market APIs"]
   },
   {
     icon: "🤖", title: "AI Note-Taking App", rarity: "RARE",
-    desc: "AI-powered note-taking with smart categorization and search.",
+    desc: "Challenge: scattered meeting notes. Action: building AI-assisted note organization and retrieval. Result: faster knowledge recall (in progress).",
     power: 70, complexity: 68, impact: 72, stack: ["Python", "React", "AI/ML", "REST API"]
   },
   {
     icon: "🍳", title: "Recipe Suggestion App", rarity: "RARE",
-    desc: "Ingredient-based recipe suggestion with AI-powered recommendations.",
+    desc: "Challenge: limited ingredient usage. Action: building ingredient-based recommendation flow. Result: practical meal suggestions (in progress).",
     power: 68, complexity: 60, impact: 75, stack: ["React", "Python", "OpenAI API", "Mobile"]
   },
 ];
@@ -232,6 +246,12 @@ const contacts = [
   { icon: "🌐", label: "PORTFOLIO", value: "alitumer.help", href: "https://alitumer.help" },
   { icon: "💻", label: "GITHUB", value: "github.com/alitumer0", href: "https://github.com/alitumer0" },
   { icon: "💼", label: "LINKEDIN", value: "linkedin.com/in/alitumer", href: "https://linkedin.com/in/alitumer" },
+];
+
+const contactCta = [
+  "Available for: Full-time and Freelance product development roles",
+  "Preferred contact: LinkedIn DM or Email",
+  "Typical response time: within 24 hours",
 ];
 
 /* ─── Animation Variants ─── */
@@ -498,6 +518,19 @@ export default function Home() {
                           {characterBio.currentQuest}
                         </p>
                       </div>
+
+                      <SwordDivider />
+
+                      <h4 className="font-[family-name:var(--font-heading)] text-[0.55rem] text-[#7ba4ff] tracking-widest">
+                        📌 PROVEN HIGHLIGHTS
+                      </h4>
+                      <ul className="mt-2 space-y-1.5">
+                        {characterHighlights.map((item) => (
+                          <li key={item} className="font-[family-name:var(--font-body)] text-[1.25rem] leading-[1.1] text-[#9dc1ff]">
+                            • {item}
+                          </li>
+                        ))}
+                      </ul>
                     </>
                   )}
 
@@ -506,6 +539,13 @@ export default function Home() {
                     <>
                       <h3 className="rpg-content-title"><ChartIcon size={16} /> Tech Skills</h3>
                       <hr className="rpg-content-divider" />
+                      <motion.div className="rpg-skill-tags mb-3" variants={staggerContainer} initial="hidden" animate="visible">
+                        {proofStats.map((item) => (
+                          <motion.span key={item.label} variants={staggerItem} className="rpg-skill-tag">
+                            {item.label}: {item.value}
+                          </motion.span>
+                        ))}
+                      </motion.div>
                       <motion.div className="rpg-skill-grid" variants={staggerContainer} initial="hidden" animate="visible">
                         {skills.map((s) => (
                           <motion.div key={s.name} variants={staggerItem}>
@@ -687,6 +727,13 @@ export default function Home() {
                       <p className="font-[family-name:var(--font-body)] text-[1.4rem] leading-[1.15] text-[#b9d3ff] mb-4">
                         Open to freelance and team opportunities in modern full-stack product development.
                       </p>
+                      <ul className="mb-4 space-y-1.5">
+                        {contactCta.map((line) => (
+                          <li key={line} className="font-[family-name:var(--font-body)] text-[1.2rem] leading-[1.1] text-[#9dc1ff]">
+                            • {line}
+                          </li>
+                        ))}
+                      </ul>
                       <motion.div className="rpg-contact-grid" variants={staggerContainer} initial="hidden" animate="visible">
                         {contacts.map((c) => (
                           <motion.a
