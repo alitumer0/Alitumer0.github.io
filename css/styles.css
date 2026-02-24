@@ -73,16 +73,11 @@
 }
 
 body {
-<<<<<<< ours
-<<<<<<< ours
-=======
->>>>>>> theirs
     font-family: 'Fira Code', 'Consolas', monospace;
     line-height: 1.6;
     color: var(--text-primary);
     background-color: var(--bg-primary);
     transition: background-color 0.3s, color 0.3s;
-<<<<<<< ours
 }
 
 body {
@@ -99,14 +94,6 @@ body {
     width: 100%;
     top: 0;
     z-index: 1000;
-=======
-    margin: 0;
-    font-family: 'Space Grotesk', sans-serif;
-    background: #030303;
-    color: #ffffff;
->>>>>>> theirs
-=======
->>>>>>> theirs
 }
 
 .navbar {
@@ -168,10 +155,6 @@ body {
 .nav-links a::after {
     content: '';
     position: absolute;
-<<<<<<< ours
-<<<<<<< ours
-=======
->>>>>>> theirs
     left: 0;
     bottom: 0;
     width: 100%;
@@ -180,7 +163,6 @@ body {
     transform: scaleX(0);
     transform-origin: right;
     transition: transform 0.3s ease;
-<<<<<<< ours
 }
 
 .nav-links a:hover {
@@ -582,19 +564,6 @@ section:nth-child(odd) {
     justify-content: center;
     gap: 0.5rem;
     margin-top: 2rem;
-=======
-    top: -150%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.12), transparent);
-    opacity: 0;
-    transform: translateY(0) rotate(20deg);
-    transition: opacity 0.4s ease, transform 0.6s ease;
-    pointer-events: none;
->>>>>>> theirs
-=======
->>>>>>> theirs
 }
 
 .nav-links a:hover {

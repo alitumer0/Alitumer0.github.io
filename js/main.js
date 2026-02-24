@@ -135,23 +135,8 @@ function updateTheme(newTheme) {
     }, 500);
 }
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 // Matrix yaÄŸmuru efekti
-=======
-=======
->>>>>>> theirs
-=======
-themeToggle.addEventListener('click', () => {
-    const currentTheme = htmlElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    updateTheme(newTheme);
-});
-
->>>>>>> theirs
 // Matrix yağmuru efekti
->>>>>>> theirs
 function startMatrixRain() {
     const matrixBg = document.querySelector('.matrix-bg');
     if (!matrixBg) return;
@@ -328,36 +313,18 @@ async function renderHome() {
 
     const nameElement = document.getElementById('name');
     const titleElement = document.getElementById('title');
-<<<<<<< ours
     const headlineElement = document.getElementById('headline');
-<<<<<<< ours
-<<<<<<< ours
 
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
     
->>>>>>> theirs
     await typeWriterEffect(nameElement, cvData.name);
     addCursorAnimation(nameElement);
 
     await typeWriterEffect(titleElement, cvData.title);
-<<<<<<< ours
 
-<<<<<<< ours
-<<<<<<< ours
-=======
-=======
->>>>>>> theirs
     if (headlineElement) {
         headlineElement.textContent = cvData.about;
     }
-=======
->>>>>>> theirs
     
->>>>>>> theirs
     renderSkills();
 }
 
@@ -486,17 +453,8 @@ function renderProjects() {
 function renderContact() {
     const contactInfo = document.getElementById('contact-info');
     contactInfo.innerHTML = `
-<<<<<<< ours
         <div class="contact-card">
-<<<<<<< ours
-<<<<<<< ours
             <h3>Letâ€™s Collaborate</h3>
-=======
-            <h3>Let’s Collaborate</h3>
->>>>>>> theirs
-=======
-            <h3>Let’s Collaborate</h3>
->>>>>>> theirs
             <p class="syntax-string">${cvData.about}</p>
             <div class="contact-list">
                 <a href="mailto:${cvData.contact.email}">
@@ -520,11 +478,6 @@ function renderContact() {
                     ${cvData.contact.portfolio}
                 </a>
             </div>
-<<<<<<< ours
-<<<<<<< ours
-=======
-=======
->>>>>>> theirs
         </div>
     `;
 }
@@ -586,8 +539,6 @@ function renderHighlights() {
         <div class="highlight-card">
             <h4>${totalCerts}+ Certifications</h4>
             <p>Continuous learning across software engineering, automation, and team collaboration.</p>
-<<<<<<< ours
->>>>>>> theirs
         </div>
     `;
 
@@ -772,17 +723,6 @@ function renderHighlights() {
         <div class="highlight-card">
             <h4>${totalCerts}+ Certifications</h4>
             <p>Continuous learning across software engineering, automation, and team collaboration.</p>
-=======
->>>>>>> theirs
-=======
-        <div class="code-block">
-            <span class="comment">// Contact information</span>
-            <span class="keyword">const</span> contact = {
-                <span class="property">"email"</span>: <span class="string">"<a href="mailto:${cvData.contact.email}" class="contact-link">${cvData.contact.email}</a>"</span>,
-                <span class="property">"linkedin"</span>: <span class="string">"<a href="https://${cvData.contact.linkedin}" target="_blank" class="contact-link">${cvData.contact.linkedin}</a>"</span>,
-                <span class="property">"github"</span>: <span class="string">"<a href="https://${cvData.contact.github}" target="_blank" class="contact-link">${cvData.contact.github}</a>"</span>
-            };
->>>>>>> theirs
         </div>
     `;
 }
@@ -851,22 +791,13 @@ function setupContactForm() {
 
 async function renderSkills() {
     const skillsContainer = document.querySelector('.skills-container');
-<<<<<<< ours
     if (!skillsContainer) {
         return;
     }
-<<<<<<< ours
-<<<<<<< ours
     skillsContainer.innerHTML = '';
 
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
     skillsContainer.innerHTML = ''; 
     
->>>>>>> theirs
     for (const skill of cvData.skills) {
         const skillElement = document.createElement('div');
         skillElement.style.opacity = '0';
