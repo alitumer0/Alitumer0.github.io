@@ -202,7 +202,8 @@ const projects: Project[] = [
   {
     icon: "⚙️", title: "SaaS Machine", rarity: "LEGENDARY",
     desc: "Challenge: repetitive backend operations. Action: built N8N automation engine with API/webhook chains. Result: simplified SaaS workflow orchestration.",
-    power: 88, complexity: 85, impact: 90, stack: ["N8N", "Node.js", "REST API", "Webhooks", "Docker"]
+    power: 88, complexity: 85, impact: 90, stack: ["N8N", "Node.js", "REST API", "Webhooks", "Docker"],
+    url: "https://app.alitumer.help/"
   },
   {
     icon: "🍽️", title: "AllerCheck", rarity: "LEGENDARY",
