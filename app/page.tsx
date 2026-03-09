@@ -222,7 +222,8 @@ const projects: Project[] = [
   {
     icon: "🧊", title: "Fridgly", rarity: "EPIC",
     desc: "Challenge: ingredient waste management. Action: built expiry-aware fridge tracking app. Result: better household inventory visibility.",
-    power: 78, complexity: 72, impact: 82, stack: ["Flutter", "Dart", "Firebase", "Local Storage"]
+    power: 78, complexity: 72, impact: 82, stack: ["Flutter", "Dart", "Firebase", "Local Storage"],
+    url: "https://fridgely.pages.dev/"
   },
   {
     icon: "📈", title: "Stock Trading Bot", rarity: "EPIC",
