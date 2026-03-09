@@ -221,7 +221,7 @@ const projects: Project[] = [
     power: 80, complexity: 78, impact: 85, stack: ["Flutter", "Dart", "Firebase", "REST API"]
   },
   {
-    icon: "🧊", title: "Fridgly", rarity: "EPIC",
+    icon: "🧊", title: "Fridgly", rarity: "LEGENDARY",
     desc: "Challenge: ingredient waste management. Action: built expiry-aware fridge tracking app. Result: better household inventory visibility.",
     power: 78, complexity: 72, impact: 82, stack: ["Flutter", "Dart", "Firebase", "Local Storage"],
     url: "https://fridgely.pages.dev/"
@@ -237,9 +237,9 @@ const projects: Project[] = [
     power: 70, complexity: 68, impact: 72, stack: ["Python", "React", "AI/ML", "REST API"]
   },
   {
-    icon: "🍳", title: "Recipe Suggestion App", rarity: "RARE",
-    desc: "Challenge: limited ingredient usage. Action: building ingredient-based recommendation flow. Result: practical meal suggestions (in progress).",
-    power: 68, complexity: 60, impact: 75, stack: ["React", "Python", "OpenAI API", "Mobile"]
+    icon: "🎓", title: "Student Management System", rarity: "EPIC",
+    desc: "Challenge: scattered academic operations. Action: built authentication, CRUD, reporting and responsive admin flows. Result: complete student lifecycle management in one product.",
+    power: 84, complexity: 78, impact: 86, stack: ["ASP.NET Core", "React", "SQL Server", "Authentication"]
   },
 ];
 
@@ -692,6 +692,9 @@ export default function Home() {
                                 <span className="rpg-inventory-title">{p.icon} {p.title}</span>
                                 <RarityBadge rarity={p.rarity} />
                               </div>
+                              {p.url && (
+                                <a href={p.url} target="_blank" rel="noopener noreferrer" className="rpg-inventory-link">🔗 Visit</a>
+                              )}
                               <p className="rpg-inventory-desc">{p.desc}</p>
                               <div className="rpg-stat-bars">
                                 {[
