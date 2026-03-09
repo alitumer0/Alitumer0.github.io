@@ -1695,34 +1695,6 @@ img {
   margin-top: 0.75rem;
 }
 
-.rpg-quick-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.45rem;
-  margin-top: 0.7rem;
-}
-
-.rpg-quick-action {
-  border: 1px solid rgba(255, 194, 75, 0.3);
-  border-radius: 2px;
-  background: linear-gradient(180deg, rgba(61, 89, 161, 0.32), rgba(28, 44, 92, 0.42));
-  padding: 0.35rem 0.65rem;
-  font-family: var(--font-heading), monospace;
-  font-size: 0.42rem;
-  letter-spacing: 0.08em;
-  color: #ffd36d;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.rpg-quick-action:hover {
-  border-color: rgba(255, 194, 75, 0.55);
-  color: #fff0b8;
-  background: linear-gradient(180deg, rgba(80, 113, 199, 0.42), rgba(35, 56, 116, 0.5));
-  box-shadow: 0 0 10px rgba(255, 194, 75, 0.12);
-}
-
 .rpg-tab {
   position: relative;
   display: inline-flex;
