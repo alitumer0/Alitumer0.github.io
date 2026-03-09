@@ -26,6 +26,12 @@ const tabs: { key: SheetTab; icon: React.ReactNode; label: string }[] = [
   { key: "Contact", icon: <ScrollIcon size={16} />, label: "Contact" },
 ];
 
+const quickActions: { key: SheetTab; label: string }[] = [
+  { key: "Inventory", label: "Open Inventory" },
+  { key: "Quests", label: "Quest Board" },
+  { key: "Contact", label: "Guild Contact" },
+];
+
 /* ─── Data ─── */
 
 const characterBio = {
@@ -416,6 +422,18 @@ export default function Home() {
                 </motion.button>
               ))}
             </nav>
+            <div className="rpg-quick-actions" aria-label="Quick actions">
+              {quickActions.map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  className="rpg-quick-action"
+                  onClick={() => switchTab(key)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </header>
 
           {/* ── Body ── */}
@@ -693,7 +711,7 @@ export default function Home() {
                                 <RarityBadge rarity={p.rarity} />
                               </div>
                               {p.url && (
-                                <a href={p.url} target="_blank" rel="noopener noreferrer" className="rpg-inventory-link">🔗 Visit</a>
+                                <a href={p.url} target="_blank" rel="noopener noreferrer" className="rpg-inventory-link rpg-inventory-link--top">🔗 Visit</a>
                               )}
                               <p className="rpg-inventory-desc">{p.desc}</p>
                               <div className="rpg-stat-bars">
@@ -714,9 +732,6 @@ export default function Home() {
                               <div className="rpg-skill-tags">
                                 {p.stack.map((t) => (<span key={t} className="rpg-skill-tag">{t}</span>))}
                               </div>
-                              {p.url && (
-                                <a href={p.url} target="_blank" rel="noopener noreferrer" className="rpg-inventory-link">🔗 Visit</a>
-                              )}
                             </TiltCard>
                           </motion.div>
                         ))}
