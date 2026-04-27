@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import RarityBadge, { type Rarity } from "@/components/rpg/RarityBadge";
 import { SwordIcon, ShieldIcon, ChartIcon, MapIcon, TrophyIcon, ChestIcon, ScrollIcon } from "@/components/rpg/RPGIcons";
 import SwordDivider from "@/components/rpg/SwordDivider";
@@ -178,7 +178,7 @@ const achievements: Achievement[] = [
     icon: "🎓", title: "Dokuz Eylul University", place: "Electrical and Electronics Engineering",
     period: "GPA: 3.11",
     desc: "Foundation in engineering thinking, systems analysis, and technical problem-solving.",
-    skills: ["Systems Analysis", "Problem Solving", "Technical Foundation"], stars: 4,
+    skills: ["Circuit Analysis", "Embedded Systems", "Signal Processing", "Microcontrollers"], stars: 4,
   },
 ];
 
@@ -358,7 +358,7 @@ export default function Home() {
   };
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <LoadingScreen />
       <ParticleBackground />
 
@@ -763,6 +763,6 @@ export default function Home() {
           <RPGFooter />
         </motion.div>
       </main>
-    </>
+    </MotionConfig>
   );
 }

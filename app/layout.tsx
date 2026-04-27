@@ -1,7 +1,36 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Press_Start_2P, VT323, Cinzel_Decorative } from "next/font/google";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: "#0d1a3a",
+  colorScheme: "dark",
+};
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Ali Eren Tümer",
+  alternateName: "Ali Tümer",
+  url: "https://alitumer.help",
+  image: "https://alitumer.help/assets/images/pixel-avatar.png",
+  jobTitle: "Full-Stack Developer",
+  email: "mailto:aetumer50@gmail.com",
+  sameAs: [
+    "https://github.com/alitumer0",
+    "https://linkedin.com/in/alitumer",
+  ],
+  knowsAbout: [
+    "React",
+    "Next.js",
+    "TypeScript",
+    "ASP.NET Core",
+    "Flutter",
+    "Full-Stack Development",
+  ],
+  knowsLanguage: ["Turkish", "English", "German"],
+};
 
 const heading = Press_Start_2P({
   subsets: ["latin"],
@@ -53,12 +82,23 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  icons: {
+    icon: [{ url: "/assets/images/pixel-avatar.png", type: "image/png" }],
+    shortcut: "/assets/images/pixel-avatar.png",
+    apple: "/assets/images/pixel-avatar.png",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${heading.variable} ${body.variable} ${ornamental.variable} ${GeistMono.variable} antialiased`}>{children}</body>
+      <body className={`${heading.variable} ${body.variable} ${ornamental.variable} ${GeistMono.variable} antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
