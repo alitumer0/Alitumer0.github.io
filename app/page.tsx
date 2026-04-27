@@ -175,7 +175,7 @@ const achievements: Achievement[] = [
     skills: ["HTML5", "CSS3", "JavaScript", "Responsive Design"], stars: 4,
   },
   {
-    icon: "🎓", title: "Dokuz Eylul University", place: "Electrical Technology",
+    icon: "🎓", title: "Dokuz Eylul University", place: "Electrical and Electronics Engineering",
     period: "GPA: 3.11",
     desc: "Foundation in engineering thinking, systems analysis, and technical problem-solving.",
     skills: ["Systems Analysis", "Problem Solving", "Technical Foundation"], stars: 4,
